@@ -7,7 +7,7 @@ import java.sql.SQLException;
 public class CNTTST {
     public static void main(String[] args) {
         // TODO Auto-generated method stub
-
+    // 되나?
         String driver = "oracle.jdbc.driver.OracleDriver";
         String url = "jdbc:oracle:thin:@localhost:1521:xe";
         String user = "scott";
