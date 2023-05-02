@@ -1,0 +1,306 @@
+package com.example.testproject.controller;
+
+
+import com.example.testproject.utils.*;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.google.api.services.youtube.YouTube;
+import com.google.api.services.youtube.model.ChannelListResponse;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
+
+
+
+@Log4j2
+@RequiredArgsConstructor
+@Controller
+public class MainController {
+
+    @Value("${mygoogle.apiKey}")
+    private String apiKey;
+
+    @Value("${mygoogle.clientid}")
+    private String CLIENT_ID ;
+
+    @Value("${mygoogle.clientsecret}")
+    private String CLIENT_SECRETS;
+
+    @Value("${mygoogle.clientredirectyoutube}")
+    private String clientredirectyoutube;
+
+    private final GoogleUtils configUtils;
+
+    private final ApiExample apiExample;
+
+    /*@GetMapping(value = "/")
+    public String mainPage(){
+
+
+        return "main";
+    }
+*/
+    @GetMapping(value = "check-youtube")
+    public String checkYouTube() throws IOException, GeneralSecurityException {
+
+        YouTube youtubeService = apiExample.getService();
+        // Define and execute the API request
+        YouTube.Channels.List request = youtubeService.channels()
+                .list(Collections.singletonList("snippet,contentDetails,statistics"));
+        ChannelListResponse response = request.setMine(true).execute();
+        System.out.println(response);
+
+        return "main";
+    }
+
+
+    @GetMapping(value = "/login")
+    public ResponseEntity<Object> moveGoogleInitUrl() {
+        String authUrl = configUtils.googleInitUrl();
+        URI redirectUri = null;
+
+        System.out.println("요청 url : "+ authUrl);
+
+        try {
+            redirectUri = new URI(authUrl);
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.setLocation(redirectUri);
+            log.info("check login");
+            return new ResponseEntity<>(httpHeaders, HttpStatus.SEE_OTHER);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+
+        return ResponseEntity.badRequest().build();
+    }
+
+    @GetMapping(value = "/oauth/login/redirect")
+    public String redirectGoogleLogin(
+            @RequestParam(value = "code") String authCode,
+            Model model
+    ) {
+        // HTTP 통신을 위해 RestTemplate 활용
+        RestTemplate restTemplate = new RestTemplate();
+        GoogleLoginRequest requestParams = GoogleLoginRequest.builder()
+                .clientId(configUtils.getClientid())
+                .clientSecret(configUtils.getClientsecret())
+                .code(authCode)
+                .redirectUri(configUtils.getClientredirect())
+                .grantType("authorization_code")
+                .build();
+
+        log.info("login try....");
+        log.info(requestParams.getCode());
+
+        try {
+            // Http Header 설정
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpEntity<GoogleLoginRequest> httpRequestEntity = new HttpEntity<>(requestParams, headers);
+
+            System.out.println(httpRequestEntity.getBody());
+            System.out.println(httpRequestEntity.getHeaders());
+            System.out.println(configUtils.getAuthurl() + "/token");
+            ResponseEntity<String> apiResponseJson = restTemplate.postForEntity(configUtils.getAuthurl() + "/token", httpRequestEntity, String.class);
+
+
+            System.out.println("크리덴셜 확인");
+            System.out.println(apiResponseJson.getBody());
+
+
+//            YouTube youtubeService = apiExample.getService(apiResponseJson.getBody());
+//            // Define and execute the API request
+//            YouTube.Channels.List request = youtubeService.channels()
+//                    .list(Collections.singletonList("snippet,contentDetails,statistics"));
+//            ChannelListResponse response = request.setMine(true).execute();
+//            System.out.println(response);
+
+            //System.out.println(youtubeApiService.getChannel());
+
+            // ObjectMapper를 통해 String to Object로 변환
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
+            objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL); // NULL이 아닌 값만 응답받기(NULL인 경우는 생략)
+            GoogleLoginResponse googleLoginResponse = objectMapper.readValue(apiResponseJson.getBody(), new TypeReference<GoogleLoginResponse>() {});
+
+            // 사용자의 정보는 JWT Token으로 저장되어 있고, Id_Token에 값을 저장한다.
+            String jwtToken = googleLoginResponse.getIdToken();
+
+            String accessToken = googleLoginResponse.getAccessToken();
+
+            // JWT Token을 전달해 JWT 저장된 사용자 정보 확인
+            String requestUrl = UriComponentsBuilder.fromHttpUrl(configUtils.getAuthurl() + "/tokeninfo").queryParam("id_token", jwtToken).toUriString();
+
+            String resultJson = restTemplate.getForObject(requestUrl, String.class);
+
+            if(resultJson != null) {
+                GoogleLoginDto userInfoDto = objectMapper.readValue(resultJson, new TypeReference<GoogleLoginDto>() {});
+
+                // 구글 로그인 DTO 반환
+                log.info(userInfoDto.toString());
+
+                model.addAttribute("result", userInfoDto);
+
+                return "ReturnPage";
+            }
+            else {
+                throw new Exception("Google OAuth failed!");
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return "main";
+    }
+
+
+    @GetMapping(value = "/youtube-check")
+    public ResponseEntity youtubeCheck(){
+        String authUrl = "https://accounts.google.com/o/oauth2/v2/auth?" +
+                "scope=profile%20email%20openid%20https://www.googleapis.com/auth/youtube.readonly" +
+                "&client_id="+CLIENT_ID+
+                "&redirect_uri="+clientredirectyoutube+
+                "&response_type=code&mine=true";
+        URI redirectUri = null;
+
+        System.out.println("요청 url : "+ authUrl);
+
+        try {
+            redirectUri = new URI(authUrl);
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.setLocation(redirectUri);
+            log.info("check login");
+            return new ResponseEntity<>(httpHeaders, HttpStatus.SEE_OTHER);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+
+
+        return ResponseEntity.badRequest().build();
+
+
+    }
+
+    // 로그인 성공후 , 코드
+    @GetMapping(value = "/oauth/youtube/redirect")
+    public ResponseEntity<ChannelListResponse> redirectGoogleYoutube(
+            @RequestParam(value = "code") String authCode
+    ) {
+        // HTTP 통신을 위해 RestTemplate 활용
+ 
+        RestTemplate restTemplate = new RestTemplate();
+        
+        // 이 템플릿을 통해 전달할때 필요한 자료를 담아줄려고 만든 클래스
+        GoogleLoginRequest requestParams = GoogleLoginRequest.builder()
+                .clientId(configUtils.getClientid())
+                .clientSecret(configUtils.getClientsecret())
+                .code(authCode)
+                .redirectUri(configUtils.getClientredirectyoutube())
+                .grantType("authorization_code")
+                .build();
+
+        log.info("login try....");
+        log.info(requestParams.getCode());
+
+        try {
+            // Http Header 설정
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpEntity<GoogleLoginRequest> httpRequestEntity = new HttpEntity<>(requestParams, headers);
+
+            // Post 요청
+            ResponseEntity<String> apiResponseJson = restTemplate.postForEntity(configUtils.getAuthurl() + "/token", httpRequestEntity, String.class);
+
+            System.out.println("크리덴셜 확인");
+            System.out.println(apiResponseJson.getBody());
+
+
+
+//            YouTube youtubeService = apiExample.getService(apiResponseJson.getBody());
+//            // Define and execute the API request
+//            YouTube.Channels.List request = youtubeService.channels()
+//                    .list(Collections.singletonList("snippet,contentDetails,statistics"));
+//            ChannelListResponse response = request.setMine(true).execute();
+//            System.out.println(response);
+
+            //System.out.println(youtubeApiService.getChannel());
+
+            // ObjectMapper를 통해 String to Object로 변환
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
+            objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL); // NULL이 아닌 값만 응답받기(NULL인 경우는 생략)
+            GoogleLoginResponse googleLoginResponse = objectMapper.readValue(apiResponseJson.getBody(), new TypeReference<GoogleLoginResponse>() {});
+
+            // 사용자의 정보는 JWT Token으로 저장되어 있고, Id_Token에 값을 저장한다.
+            String jwtToken = googleLoginResponse.getIdToken();
+
+            String accessToken = googleLoginResponse.getAccessToken();
+
+            //YouTube youTube = apiExample.getService(accessToken);
+
+            YouTube youTube = apiExample.getYouTubeService(accessToken);
+
+            // 여기까지 세팅
+            YouTube.Channels.List request = youTube.channels().list(Collections.singletonList("snippet,contentDetails,statistics"));
+
+            // 요청
+            ChannelListResponse response = request.setMine(true).execute();
+
+
+            System.out.println("결과값");
+            System.out.println(response);
+            System.out.println(response.toString());
+
+
+
+            ObjectMapper mapper = new ObjectMapper();
+
+            mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL); // NULL이 아닌 값만 응답받기(NULL인 경우는 생략)
+            YoutubeChannelList channelList = mapper.readValue(response.toString(), YoutubeChannelList.class);
+
+            System.out.println("변환 결과값");
+            System.out.println(channelList);
+            System.out.println(channelList.toString());
+
+
+            if(channelList.getItems().size() >0){
+                System.out.println("원하는 값 id : "+ channelList.getItems().get(0).getId());
+            }
+
+
+            // JWT Token을 전달해 JWT 저장된 사용자 정보 확인
+            String requestUrl = UriComponentsBuilder.fromHttpUrl(configUtils.googleInitYoutubeUrl() + "/tokeninfo").queryParam("id_token", jwtToken).toUriString();
+
+            String resultJson = restTemplate.getForObject(requestUrl, String.class);
+
+            if(resultJson != null) {
+
+                return ResponseEntity.ok().body(response);
+            }
+            else {
+                throw new Exception("Google OAuth failed!");
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return ResponseEntity.badRequest().body(null);
+    }
+}

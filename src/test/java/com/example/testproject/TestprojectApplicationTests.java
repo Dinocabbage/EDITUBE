@@ -1,13 +1,13 @@
-package team_i.EDITUBE;
+package com.example.testproject;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class EditubeApplicationTests {
+class TestprojectApplicationTests {
 
-	@Test
-	void contextLoads() {
-	}
+    @Test
+    void contextLoads() {
+    }
 
 }
