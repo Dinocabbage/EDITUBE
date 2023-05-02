@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class UserDAO_memberDAO {
-    private Map<String, User_member> users = new HashMap<>();
+  /*  private Map<String, User_member> users = new HashMap<>();
 
     public UserDAO_memberDAO() {
         this.users = new HashMap<>();
@@ -32,6 +32,6 @@ public class UserDAO_memberDAO {
     public Collection<Member> selectAll(){
         return users.values();
     }
-
+*/
 
 }

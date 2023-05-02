@@ -25,17 +25,12 @@ dependencies {
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    runtimeOnly 'com.oracle.database.jdbc:ojdbc8'
     implementation 'com.google.api-client:google-api-client:1.31.1'
     implementation 'com.google.oauth-client:google-oauth-client-jetty:1.23.0'
     //implementation 'com.google.http-client:google-http-client-jackson2:1.39.2'
-    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation 'com.google.apis:google-api-services-youtubeAnalytics:v2-rev16-1.23.0'
     implementation 'com.google.apis:google-api-services-youtube:v3-rev20210915-1.32.1'
-    implementation 'org.apache.tomcat:tomcat-jdbc:8.5.27'
-    implementation 'com.oracle.ojdbc:orai18n:19.3.0.0'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'com.oracle.database.jdbc:ojdbc8:19.3.0.0'
+
 
 }
 

@@ -1,7 +1,7 @@
 package com.example.testproject.model;
 
 public class UserDAOjdbcTemplate {
-    private JdbcTemplate jdbcTemplate;
+   /* private JdbcTemplate jdbcTemplate;
     private String sql;
 
     public MemberDaoSpring(DataSource ds) {
@@ -49,5 +49,5 @@ public class UserDAOjdbcTemplate {
     }
 
 
-}
+}*/
 }
