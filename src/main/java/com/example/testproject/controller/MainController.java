@@ -14,10 +14,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import javax.servlet.http.HttpServletRequest;
 
 import java.io.IOException;
 import java.net.URI;
@@ -48,13 +49,11 @@ public class MainController {
 
     private final ApiExample apiExample;
 
-    /*@GetMapping(value = "/")
+    @GetMapping(value = "/")
     public String mainPage(){
-
-
         return "main";
     }
-*/
+
     @GetMapping(value = "check-youtube")
     public String checkYouTube() throws IOException, GeneralSecurityException {
 
@@ -67,7 +66,6 @@ public class MainController {
 
         return "main";
     }
-
 
     @GetMapping(value = "/login")
     public ResponseEntity<Object> moveGoogleInitUrl() {
@@ -190,11 +188,31 @@ public class MainController {
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
-
-
         return ResponseEntity.badRequest().build();
+    }
 
 
+    @RequestMapping("youtube-search")
+    @GetMapping(value = "youtube-search")
+    public ResponseEntity youtubeSearch(HttpServletRequest request){
+        String channel = request.getParameter("channel");;
+        String searchUrl = "https://www.googleapis.com/youtube/v3/search?" +
+                "part=snippet&type=channel&maxResults=5&q="+ channel +
+                "&key=" + apiKey;
+
+        URI redirectUri = null;
+
+        System.out.println("요청 url : "+ searchUrl);
+
+        try {
+            redirectUri = new URI(searchUrl);
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.setLocation(redirectUri);
+            return new ResponseEntity<>(httpHeaders, HttpStatus.SEE_OTHER);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.badRequest().build();
     }
 
     // 로그인 성공후 , 코드
@@ -203,9 +221,9 @@ public class MainController {
             @RequestParam(value = "code") String authCode
     ) {
         // HTTP 통신을 위해 RestTemplate 활용
- 
+
         RestTemplate restTemplate = new RestTemplate();
-        
+
         // 이 템플릿을 통해 전달할때 필요한 자료를 담아줄려고 만든 클래스
         GoogleLoginRequest requestParams = GoogleLoginRequest.builder()
                 .clientId(configUtils.getClientid())
