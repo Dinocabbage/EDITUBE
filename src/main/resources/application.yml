@@ -12,9 +12,3 @@ mygoogle:
   clientredirectyoutube: http://localhost:8080/oauth/youtube/redirect
   apiKey: AIzaSyBeXBspKOYvU13kgDawlVsBXNHIAbdxSoE
 
-spring:
-  datasource:
-    url: jdbc:oracle:thin:@localhost:1521:XE
-    username: scott
-    password: tiger
-    driver-class-name: oracle.jdbc.driver.OracleDriver
