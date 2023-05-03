@@ -3,6 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <title>구글 메인테스트페이지</title>
+    <script>
+        function noSpaceForm(obj) { // 공백사용못하게
+            var str_space = /\s/;  // 공백체크
+            if(str_space.exec(obj.value)) { //공백 체크
+                //alert("해당 항목에는 공백을 사용할수 없습니다.\n\n공백은 자동적으로 제거 됩니다.");
+                obj.focus();
+                obj.value = obj.value.replace(/\s| /gi,''); // 공백제거
+                return false;
+            }
+        }
+        //팝업창 띄우기
+        /*function popup(){
+            var url = "popup.html";
+            var name = "popup test";
+            var option = "width = 500, height = 500, top = 100, left = 200, location = no"
+            window.open(url, name, option);
+        }*/
+    </script>
 </head>
 <body>
 <h3>메인입니다.</h3>
@@ -11,11 +29,8 @@
 <a href="/youtube-check">유튜브정보</a>
 <a href="/join">회원가입하기</a>
 <form action = "/youtube-search" method="POST">
-    <input type = "text" name = "channel" id = "channel"/>
+    <input type = "text" name = "channel" id = "channel" onchange="noSpaceForm(this);"/>
     <button type="submit">유튜버 검색</button>
 </form>
-
-<!--    <a href="/youtube-search">유튜버 검색</a>-->
-
 </body>
 </html>
