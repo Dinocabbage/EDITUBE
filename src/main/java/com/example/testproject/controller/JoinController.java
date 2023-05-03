@@ -38,6 +38,12 @@ public class JoinController {
         return "join";
     }
 
+    @GetMapping(value = "/login2")
+    public String login() {
+
+
+        return "login";
+    }
 
     @ResponseBody
     @PostMapping("try-join")

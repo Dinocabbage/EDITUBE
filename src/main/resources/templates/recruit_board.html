@@ -3,9 +3,9 @@
 
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="/style/portfolio_board.css">
+    <title>구인글 게시판</title>
     <link href="https://fonts.googleapis.com/css?family=Noto+Sans KR&display=swap" rel="stylesheet">
-    <title>포트폴리오 게시판</title>
+    <link rel="stylesheet" href="/style/recruit_board.css">
 </head>
 
 <body>
@@ -35,8 +35,9 @@
         <div class="board_list_wrap">
             <h1><input class="search" placeholder="검색어를 입력하세요"></h1>
             <hr />
-            <div>· 총 영상물 시간 : <input type="number" class="search1" placeholder="구독자 수를 입력하세요"></div>
-            <div>· 근무 가능 지역 : <input class="search2" placeholder="근무 가능 지역을 검색하세요">
+            <div>· 구독자 수 : <input type="number" class="search1" placeholder="구독자수를 입력하세요"></div>
+            <div>· 급여 : <input type="number" class="search1" placeholder="금액을 입력하세요"></div>
+            <div>· 근무 지역 : <input class="search2" placeholder="지역을 입력하세요">
                 <label for="maya">재택 근무</label>
                 <input type="checkbox" name="editing-tools" id="maya">
             </div>
@@ -68,9 +69,9 @@
                 <thead>
                     <tr>
                         <th>제목</th>
-                        <th>닉네임</th>
-                        <th>총 영상물 시간</th>
-                        <th>편집툴</th>
+                        <th>모집기간</th>
+                        <th>채널명</th>
+                        <th>카테고리</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -114,10 +115,11 @@
                         <a href="#" class="bt">></a>
             </div>
             <div class="paging1">
-                <a href="#" class="bt">내 포트폴리오 공개</a>
+                <a href="#" class="bt">구인글 작성</a>
             </div>
         </div>
     </main>
+
     <footer>
         <div class="footerContainer">
             <div class="footerLogo">

@@ -3,8 +3,8 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>로그인</title>
-  <link rel="stylesheet" href="/style/login.css">
+  <title>마이페이지: 경력 인증 요청 확인</title>
+  <link rel="stylesheet" href="/style/check_career_request.css">
   <link href="https://fonts.googleapis.com/css?family=Noto+Sans KR&display=swap" rel="stylesheet">
 </head>
 
@@ -24,41 +24,46 @@
         </ul>
       </nav>
       <div class="account">
-        <a href="#">회원가입</a>
-        <a href="#">로그인</a>
+        <a>##님 환영합니다.</a>
+        <a href="#">마이 페이지</a>
+        <a href="#">로그아웃</a>
       </div>
     </div>
   </header>
 
   <main>
-    <form id="loginForm" name="loginForm" method="POST">
-      <h1 class="loginText">로그인</h1>
-      <div class=box>
-        <div class=totalBox>
-          <span class="titleText">아이디</span>
-          <span class=inputBox>
-            <input type="text" placeholder="email@editube.com" id="email" class="id">
-          </span>
-        </div>
-      </div>
+    <nav class="sideBar">
+      <ul>
+        <div class=menuPart>
+          <h2>마이 페이지</h2>
+          <li><a href="#">내 기본정보</a></li>
+          <li><a href="#">작성한 구인글</a></li>
+          <li class="active"><a href="#">경력 인증 요청 확인</a></li>
 
-      <div class=box>
-        <div class=totalBox>
-          <span class="titleText">비밀번호</span>
-          <span class="inputBox"><input type="password" placeholder="••••••••" id="password" class="password">
-          </span>
         </div>
+        <li><a href="#">회원탈퇴 </a></li>
+      </ul>
+    </nav>
+
+    <div class="main">
+      <h3 class="right_info">경력 인증 요청 확인</h3>
+      <hr>
+      <div id="board">
+        <div class="post">
+          <span>편집자ID</span>
+          <span>기간</span>
+          <span>인증상태</span>
+          <span>인증</span>
+
+        </div>
+        <button class="career_cancel">경력인증 취소</button>
+        <button class="career_check">경력인증 확인</button>
+
+        <!-- 게시물 추가 -->
       </div>
-      <button type="submit" class=loginButton>로그인</button>
-      <div class=moveNextPage>
-        <ul>
-          <li><a href="signup-options.html">회원가입</a></li>
-          <li><a href="find-id.html">아이디 찾기</a></li>
-          <li><a href="find-password.html">비밀번호 찾기</a></li>
-        </ul>
-      </div>
-    </form>
+    </div>
   </main>
+
   <footer>
     <div class="footerContainer">
       <div class="footerLogo">
@@ -70,7 +75,6 @@
       </div>
     </div>
   </footer>
-  
 </body>
 
 </html>
