@@ -38,6 +38,15 @@ public class JoinController {
         return "join";
     }
 
+<<<<<<< Updated upstream
+=======
+    @GetMapping(value = "/login2")
+    public String login() {
+
+
+        return "login";
+    }
+>>>>>>> Stashed changes
 
     @ResponseBody
     @PostMapping("try-join")

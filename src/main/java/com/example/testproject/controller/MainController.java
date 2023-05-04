@@ -195,7 +195,11 @@ public class MainController {
     @RequestMapping("youtube-search")
     @GetMapping(value = "youtube-search")
     public ResponseEntity youtubeSearch(HttpServletRequest request){
+<<<<<<< Updated upstream
         String channel = request.getParameter("channel");;
+=======
+        String channel = request.getParameter("channel");
+>>>>>>> Stashed changes
         String searchUrl = "https://www.googleapis.com/youtube/v3/search?" +
                 "part=snippet&type=channel&maxResults=5&q="+ channel +
                 "&key=" + apiKey;
