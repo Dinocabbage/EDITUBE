@@ -232,8 +232,7 @@ input[type="submit"] {
 }
 
 input[type="submit"]:hover {
-    background-color: rgb(255, 255, 255);
-    color: rgba(37.00000159442425, 107.00000122189522, 244.0000006556511, 1);
+    background-color: #0058DD;
 }
 
 .changepasswd {
