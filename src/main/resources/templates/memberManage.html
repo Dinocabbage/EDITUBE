@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html  xmlns:th="http://www.thymeleaf.org">
 
 <head>
   <meta charset="UTF-8">
@@ -55,17 +55,29 @@
         <button class="btn">검색</button>
       </div>
       <hr />
-      <div id="board">
-        <div class="post">
-          <span>아이디</span>
-          <span>회원 구분</span>
-          <span>이름</span>
-          <span>닉네임</span>
-          <span>가입일</span>
-        </div>
-        <!-- 게시물 추가 -->
+      <div id="board" class="container">
+        <table>
+          <thead  class="post">
+          <tr>
+            <th>아이디</th>
+            <th>회원 구분</th>
+            <th>이름</th>
+            <th>닉네임</th>
+            <th>가입일</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="member : ${members}">
+            <td th:text="${member.id}"></td>
+            <td th:text="${member.userType}"></td>
+            <td th:text="${member.name}"></td>
+            <td th:text="${member.nickName}"></td>
+
+            <!--        <td th:text="${member.nickName}"></td>-->
+          </tr>
+          </tbody>
+        </table>
       </div>
-    </div>
   </main>
 
   <footer>

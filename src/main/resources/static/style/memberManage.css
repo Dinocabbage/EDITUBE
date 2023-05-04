@@ -202,7 +202,9 @@ hr {
 .btn:hover {
     background-color: #0069d9;
 }
-
+th{
+    width: 100px;
+}
 .root {
     display: flex;
     /* 이게 겹치게 하는거 div */
