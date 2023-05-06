@@ -1,6 +1,6 @@
-package com.example.testproject.repository;
+package com.example.testproject.heesuu.repository;
 
-import com.example.testproject.domain.Member;
+import com.example.testproject.heesuu.domain.Member;
 
 import java.util.List;
 import java.util.Optional;

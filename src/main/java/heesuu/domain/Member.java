@@ -1,7 +1,9 @@
-package com.example.testproject.domain;
+package com.example.testproject.heesuu.domain;
 
 import lombok.Builder;
 import lombok.Data;
+
+import java.time.LocalDateTime;
 
 @Data
 public class Member {
@@ -15,5 +17,8 @@ public class Member {
     private String userType;
     private String gender;
     private String profilePhoto;
+    private LocalDateTime birth_date;
+    private LocalDateTime register_date;
+
 
 }

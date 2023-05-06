@@ -1,4 +1,4 @@
-package com.example.testproject.controller;
+package com.example.testproject.heesuu.controller;
 
 import lombok.Data;
 
@@ -15,5 +15,8 @@ public class MemberForm {
     private String userType;
     private String gender;
     private String profilePhoto;
+    private LocalDateTime birth_date;
+    private LocalDateTime register_date;
+
 
 }

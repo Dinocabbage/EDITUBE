@@ -1,6 +1,6 @@
-package com.example.testproject.repository;
+package com.example.testproject.heesuu.repository;
 
-import com.example.testproject.domain.Member;
+import com.example.testproject.heesuu.domain.Member;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -8,8 +8,6 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
 import javax.sql.DataSource;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +43,7 @@ public class JdbcTemplateMemberRepository implements MemberRepository {
 
     @Override
     public Optional<Member> findByNickName(String nickName) {
-        List<Member> result = jdbcTemplate.query("select * from USER_INFO where name = ?", memberRowMapper(), nickName);
+        List<Member> result = jdbcTemplate.query("select * from USER_INFO where nickName = ?", memberRowMapper(), nickName);
         return result.stream().findAny();
     }
 
@@ -66,6 +64,7 @@ public class JdbcTemplateMemberRepository implements MemberRepository {
             member.setUserType(rs.getString("USER_TYPE"));
             member.setGender(rs.getString("GENDER"));
             member.setProfilePhoto(rs.getString("PROFILE_PHOTO"));
+//            member.setRegister_date(rs.getTimestamp(register_date).toLocalDateTime());
             return member;
         };
     }

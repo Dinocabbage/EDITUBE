@@ -1,14 +1,13 @@
-package com.example.testproject.controller;
+package com.example.testproject.heesuu.controller;
 
-import com.example.testproject.domain.Member;
-import com.example.testproject.service.MemberService;
+import com.example.testproject.heesuu.domain.Member;
+import com.example.testproject.heesuu.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import javax.print.DocFlavor;
 import java.util.List;
 
 @Controller

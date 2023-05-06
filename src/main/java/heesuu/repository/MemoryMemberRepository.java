@@ -1,7 +1,5 @@
-package com.example.testproject.repository;
-import com.example.testproject.domain.Member;
-import com.example.testproject.repository.MemberRepository;
-import org.springframework.stereotype.Repository;
+package com.example.testproject.heesuu.repository;
+import com.example.testproject.heesuu.domain.Member;
 
 import java.util.*;
 

@@ -1,10 +1,7 @@
-package com.example.testproject.service;
+package com.example.testproject.heesuu.service;
 
-import com.example.testproject.domain.Member;
-import com.example.testproject.repository.MemberRepository;
-import com.example.testproject.repository.MemoryMemberRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.example.testproject.heesuu.domain.Member;
+import com.example.testproject.heesuu.repository.MemberRepository;
 
 import java.util.List;
 import java.util.Optional;

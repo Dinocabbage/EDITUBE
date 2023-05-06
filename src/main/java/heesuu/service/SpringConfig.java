@@ -1,12 +1,10 @@
-package com.example.testproject.service;
+package com.example.testproject.heesuu.service;
 
-import com.example.testproject.repository.JdbcTemplateMemberRepository;
-import com.example.testproject.repository.MemberRepository;
-import com.example.testproject.repository.MemoryMemberRepository;
+import com.example.testproject.heesuu.repository.JdbcTemplateMemberRepository;
+import com.example.testproject.heesuu.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Controller;
 
 import javax.sql.DataSource;
 
