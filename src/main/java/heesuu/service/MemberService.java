@@ -1,7 +1,7 @@
-package com.example.testproject.heesuu.service;
+package heesuu.service;
 
-import com.example.testproject.heesuu.domain.Member;
-import com.example.testproject.heesuu.repository.MemberRepository;
+import heesuu.domain.Member;
+import heesuu.repository.MemberRepository;
 
 import java.util.List;
 import java.util.Optional;

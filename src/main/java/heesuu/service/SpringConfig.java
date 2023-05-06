@@ -1,7 +1,7 @@
-package com.example.testproject.heesuu.service;
+package heesuu.service;
 
-import com.example.testproject.heesuu.repository.JdbcTemplateMemberRepository;
-import com.example.testproject.heesuu.repository.MemberRepository;
+import heesuu.repository.JdbcTemplateMemberRepository;
+import heesuu.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

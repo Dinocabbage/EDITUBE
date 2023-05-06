@@ -1,4 +1,4 @@
-package com.example.testproject.heesuu.controller;
+package heesuu.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

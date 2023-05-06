@@ -1,4 +1,4 @@
-package com.example.testproject.heesuu.controller;
+package heesuu.controller;
 
 import lombok.Data;
 

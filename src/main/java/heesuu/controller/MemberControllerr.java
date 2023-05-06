@@ -1,7 +1,7 @@
-package com.example.testproject.heesuu.controller;
+package heesuu.controller;
 
-import com.example.testproject.heesuu.domain.Member;
-import com.example.testproject.heesuu.service.MemberService;
+import heesuu.domain.Member;
+import heesuu.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

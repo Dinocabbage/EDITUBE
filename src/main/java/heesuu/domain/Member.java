@@ -1,4 +1,4 @@
-package com.example.testproject.heesuu.domain;
+package heesuu.domain;
 
 import lombok.Builder;
 import lombok.Data;

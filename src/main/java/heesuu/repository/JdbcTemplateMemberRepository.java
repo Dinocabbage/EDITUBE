@@ -1,6 +1,6 @@
-package com.example.testproject.heesuu.repository;
+package heesuu.repository;
 
-import com.example.testproject.heesuu.domain.Member;
+import heesuu.domain.Member;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
