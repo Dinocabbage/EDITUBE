@@ -126,10 +126,7 @@ hr {
   border: none;
   padding: 5px 10px;
   cursor: pointer;
-  border-top-left-radius: 98px;
-  border-top-right-radius: 98px;
-  border-bottom-left-radius: 98px;
-  border-bottom-right-radius: 98px;
+  border-radius: 98px;
   margin: 5px;
   float: right;
 }

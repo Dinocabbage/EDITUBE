@@ -102,17 +102,13 @@ main {
     background-color: rgba(37.00000159442425, 107.00000122189522, 244.0000006556511, 1);
     width: 345px;
     height: 61px;
-    position: absorlute;
     top: 465px;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-    border-bottom-left-radius: 8px;
-    border-bottom-right-radius: 8px;
+    border-radius: 8px;
     border: none;
     color: rgba(255, 255, 255, 1);
     text-align: center;
     font-size: 17px;
-    margin-bottom: 30px;
+    margin: 20px 0 30px 0;
 }
 
 .findIdButton:hover {
@@ -126,11 +122,8 @@ main {
     width: 345px;
     height: 63px;
     position: relative;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-    border-bottom-left-radius: 8px;
-    border-bottom-right-radius: 8px;
-    margin-bottom: 30px;
+    border-radius: 8px;
+    margin-bottom: 10px;
 }
 
 .totalBox {
@@ -171,7 +164,7 @@ main {
 }
 
 .name,
-.phoneNumber {
+.phone_number {
     border: none;
     background: transparent;
     color: rgba(29.000000171363354, 29.000000171363354, 32.00000189244747, 1);

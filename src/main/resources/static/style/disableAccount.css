@@ -174,10 +174,7 @@ footer {
   height: 50px;
   position: absorlute;
   top: 465px;
-  border-top-left-radius: 8px;
-  border-top-right-radius: 8px;
-  border-bottom-left-radius: 8px;
-  border-bottom-right-radius: 8px;
+  border-radius: 8px;
   border: none;
   color: rgba(255, 255, 255, 1);
   text-align: center;
@@ -212,10 +209,7 @@ footer {
   width: 345px;
   height: 63px;
   position: relative;
-  border-top-left-radius: 8px;
-  border-top-right-radius: 8px;
-  border-bottom-left-radius: 8px;
-  border-bottom-right-radius: 8px;
+  border-radius: 8px;
   margin-bottom: 30px;
 }
 

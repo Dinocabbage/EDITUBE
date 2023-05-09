@@ -157,7 +157,7 @@ hr {
     background: #256BF4;
     height: 3px;
     border: 0;
-    border-radius: 10px 10px 10px 10px;
+    border-radius: 10px;
 }
 
 .main {
@@ -193,10 +193,7 @@ hr {
     border: none;
     padding: 5px 10px;
     cursor: pointer;
-    border-top-left-radius: 98px;
-    border-top-right-radius: 98px;
-    border-bottom-left-radius: 98px;
-    border-bottom-right-radius: 98px;
+    border-radius: 98px;
 }
 
 .career_cancel:hover {
@@ -209,10 +206,7 @@ hr {
     border: none;
     padding: 5px 10px;
     cursor: pointer;
-    border-top-left-radius: 98px;
-    border-top-right-radius: 98px;
-    border-bottom-left-radius: 98px;
-    border-bottom-right-radius: 98px;
+    border-radius: 98px;
 }
 
 .career_check:hover {
