@@ -8,10 +8,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import team_iproject_main.team_iproject_main.exception.DuplicateEmailException;
-import team_iproject_main.team_iproject_main.exception.DuplicateNickNameException;
-import team_iproject_main.team_iproject_main.exception.UserNotFoundException;
-import team_iproject_main.team_iproject_main.exception.WrongPasswordException;
+import team_iproject_main.team_iproject_main.exception.*;
 import team_iproject_main.team_iproject_main.model.DO.*;
 import team_iproject_main.team_iproject_main.model.SO.UserService;
 
@@ -77,6 +74,11 @@ public class UserController {
     @PostMapping("/signup_youtuber")
     public String signup_youtuber(RegisterRequest req, Model model) {
         String view = "";
+        if(req.getChannel_id() == null) {
+            model.addAttribute("resultMsg", "채널 인증이 되지 않아 가입을 진행할 수 없습니다.");
+
+            return "signup_youtuber";
+        }
         try {
             userService.youtuber_signUp(req);
             model.addAttribute("msg", "회원가입 되었습니다.");
@@ -88,6 +90,10 @@ public class UserController {
         }
         catch (DuplicateNickNameException e) {
             model.addAttribute("msg", "이미 존재하는 닉네임입니다.");
+            view = "/signup_youtuber";
+        }
+        catch (DuplicateChannelException e) {
+            model.addAttribute("msg", "채널아이디가 중복입니다.");
             view = "/signup_youtuber";
         }
         return view;
@@ -220,5 +226,24 @@ public class UserController {
         return "redirect:/myPage";
     }
 
+    @GetMapping("/changepwd")
+    public String ChangepwdForm(Model model) {
+        return "changepwd";
+    }
+
+    @PostMapping("/changepwd")
+    public String Changepwd(@RequestParam(value = "current") String current, @RequestParam(value = "newpwd") String newpwd , Model model, HttpSession session) {
+        String email = String.valueOf(session.getAttribute("email"));
+        UserDO userDO = userService.findUser(email);
+
+        if(!current.equals(userDO.getPassword())){
+            model.addAttribute("failMsg","비밀번호를 잘못입력하셨습니다. 비밀번호를 확인해주세요.");
+            return "changepwd";
+        }
+        else {
+            userService.changePwd(email, newpwd);
+            return "redirect:/myPage";
+        }
+    }
 
 }

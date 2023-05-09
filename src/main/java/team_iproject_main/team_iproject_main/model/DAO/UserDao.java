@@ -4,9 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import team_iproject_main.team_iproject_main.model.DO.RegisterReqeustChannel;
 import team_iproject_main.team_iproject_main.model.DO.UserDO;
 import team_iproject_main.team_iproject_main.model.DO.UserUpdateRequest;
 import team_iproject_main.team_iproject_main.model.Mapper.UserRowMapper;
+import team_iproject_main.team_iproject_main.model.Mapper.YoutuberRowMapper;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -18,11 +20,26 @@ public class UserDao {
     private JdbcTemplate jdbcTemplate;
 
 
-    public void create(UserDO user) {
+    public void createEditor(UserDO user) {
         String sql = "INSERT INTO USER_INFO(EMAIL, PASSWORD, NAME, NICKNAME, PHONE_NUMBER, ADDRESS, DETAIL_ADDR, USER_TYPE, GENDER, BIRTH_DATE) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         jdbcTemplate.update(sql, user.getEmail(), user.getPassword(), user.getName(), user.getNickname(), user.getPhone_number(),
                 user.getAddress(), user.getDetail_addr(), user.getUser_type(), user.getGender(), user.getBirth_date());
+
+        String sqluqid = "INSERT INTO USER_EDITOR(EDITOR_EMAIL, IS_UPLOADED) " +
+                "VALUES (?, ?)";
+        jdbcTemplate.update(sqluqid, user.getEmail(), "FALSE");
+    }
+
+    public void createYoutuber(UserDO user) {
+        String sql = "INSERT INTO USER_INFO(EMAIL, PASSWORD, NAME, NICKNAME, PHONE_NUMBER, ADDRESS, DETAIL_ADDR, USER_TYPE, GENDER, BIRTH_DATE) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        jdbcTemplate.update(sql, user.getEmail(), user.getPassword(), user.getName(), user.getNickname(), user.getPhone_number(),
+                user.getAddress(), user.getDetail_addr(), user.getUser_type(), user.getGender(), user.getBirth_date());
+
+        String sql1 = "INSERT INTO USER_YOUTUBER(YOUTUBER_EMAIL, CHANNEL_ID) " +
+                "VALUES (?, ?)";
+        jdbcTemplate.update(sql1, user.getEmail(), user.getChannel_id());
     }
 
 
@@ -65,6 +82,16 @@ public class UserDao {
         return user;
     }
 
+    public RegisterReqeustChannel findByChannel(String channel_id) {
+        String sql = "SELECT * FROM USER_YOUTUBER WHERE CHANNEL_ID = ?";
+        RegisterReqeustChannel uq = null;
+        try {
+            uq = jdbcTemplate.queryForObject(sql, new YoutuberRowMapper(), channel_id);
+        }
+        catch (EmptyResultDataAccessException e) {
+        }
+        return uq;
+    }
 
     public List<UserDO> findAll() {
         String sql = "SELECT email, password FROM USER_INFO";

@@ -14,4 +14,5 @@ public class RegisterRequest {
     private String detail_addr;
     private String gender;
     private String birth_date;
+    private String channel_id;
 }

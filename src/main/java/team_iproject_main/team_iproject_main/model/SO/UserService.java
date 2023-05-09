@@ -2,10 +2,7 @@ package team_iproject_main.team_iproject_main.model.SO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import team_iproject_main.team_iproject_main.exception.DuplicateEmailException;
-import team_iproject_main.team_iproject_main.exception.DuplicateNickNameException;
-import team_iproject_main.team_iproject_main.exception.UserNotFoundException;
-import team_iproject_main.team_iproject_main.exception.WrongPasswordException;
+import team_iproject_main.team_iproject_main.exception.*;
 import team_iproject_main.team_iproject_main.model.DAO.UserDao;
 import team_iproject_main.team_iproject_main.model.DO.*;
 
@@ -30,23 +27,26 @@ public class UserService {
         }
         user = new UserDO(req.getEmail(), req.getPassword(), req.getName(), req.getNickname(), req.getPhone_number(), req.getAddress(),
                 req.getDetail_addr(), "편집자", req.getGender(), LocalDate.parse(req.getBirth_date()));
-        userDao.create(user);
+        userDao.createEditor(user);
     }
 
     public void youtuber_signUp(RegisterRequest req) {
         UserDO user = userDao.findByEmail(req.getEmail());
         UserDO userSelectByNickName = userDao.findByNickname(req.getNickname());
-
+        RegisterReqeustChannel uq = userDao.findByChannel(req.getChannel_id());
         if (user != null) {
             throw new DuplicateEmailException();
         }
         if (userSelectByNickName != null){
             throw new DuplicateNickNameException();
         }
+        if (uq != null) {
+            throw new DuplicateChannelException("channel_id address is already registered.");
+        }
 
         user = new UserDO(req.getEmail(), req.getPassword(), req.getName(), req.getNickname(), req.getPhone_number(), req.getAddress(),
-                req.getDetail_addr(), "유튜버", req.getGender(), LocalDate.parse(req.getBirth_date()));
-        userDao.create(user);
+                req.getDetail_addr(), "유튜버", req.getGender(), LocalDate.parse(req.getBirth_date()), req.getChannel_id());
+        userDao.createYoutuber(user);
     }
 
     public List<UserDO> getAllMembers() {

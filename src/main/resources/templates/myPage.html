@@ -8,6 +8,11 @@
   <title>마이 페이지: 내 기본정보</title>
   <link rel="stylesheet" href="/style/myPage.css">
   <link href="https://fonts.googleapis.com/css?family=Noto+Sans KR&display=swap" rel="stylesheet">
+  <script>
+    document.getElementById("changepwd").onclick = function () {
+        location.href = "/changepwd";
+    };
+</script>
 </head>
 
 <th:block layout:fragment="content">
@@ -48,7 +53,9 @@
             </div>
           </div>
         </div>
-        <button type="submit" class=changepasswd >비밀번호변경</button>
+        <a href="changepwd">
+        <button type="button" onclick="changepwd" class=changepasswd>비밀번호변경</button>
+        </a>
 
         <div class="namePart">
           <div class=nameArea>
@@ -117,7 +124,7 @@
             </div>
           </div>
         </div>
-        <input type="submit" value="수정완료">
+        <input class="submit" type="submit" value="수정완료">
       </form>
     </div>
   </main>

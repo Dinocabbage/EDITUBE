@@ -130,7 +130,7 @@ main {
     font-size: 17px;
 }
 
-input[type="submit"] {
+.submit {
     background-color: #256BF4;
     width: 100px;
     height: 40px;
@@ -142,7 +142,7 @@ input[type="submit"] {
     margin-bottom: 30px;
 }
 
-input[type="submit"]:hover {
+.submit:hover {
     background-color: #0058DD;
 }
 
