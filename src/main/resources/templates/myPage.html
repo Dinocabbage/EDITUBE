@@ -13,6 +13,24 @@
         location.href = "/changepwd";
     };
 </script>
+  <script>
+    function submitHandler() {
+var nickname = document.querySelector('#nickname');
+
+if(nickname.value.length > 9) {
+    alert("닉네임은 9글자 이하로 입력하세요.");
+    return false;
+}
+}
+
+function init() {
+    var updateInfo = document.querySelector('#updateInfo');
+    updateInfo.onsubmit = submitHandler;
+}
+
+window.onload = init;
+
+  </script>
 </head>
 
 <th:block layout:fragment="content">
@@ -43,7 +61,7 @@
 
     <div class="main">
       <h3 class="right_info">내 기본 정보</h3>
-      <form action="/myPage" method="post" modelAttribute="member">
+      <form action="/myPage" id="updateInfo" method="post" modelAttribute="member">
         <div class=idPart>
           <div class=idArea>
             <span class="idText">아이디</span>

@@ -17,7 +17,8 @@ header {
 }
 
 .menu {
-    margin-left: 70px;
+    margin-left: 10%;
+    height: 28px;
 }
 
 .menu ul {
@@ -44,6 +45,7 @@ header {
 .account {
     display: flex;
     width: 310px;
+    justify-content: flex-end;
 }
 
 .account a {
@@ -54,6 +56,29 @@ header {
     font-weight: normal;
     line-height: 2;
 }
+
+
+
+.accountlogin {
+    display: flex;
+    width: 350px;
+    justify-content: flex-end;
+}
+
+.accountlogin a {
+    margin-left: 20px;
+    text-decoration: none;
+    color: #1D1D20;
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 2;
+}
+
+
+
+
+
+
 
 .logoutButton{
     background-color: rgba(37.00000159442425, 107.00000122189522, 244.0000006556511, 1);
