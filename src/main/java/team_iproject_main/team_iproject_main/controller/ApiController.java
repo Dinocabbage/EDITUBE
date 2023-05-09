@@ -250,7 +250,13 @@ public class ApiController {
             if(resultJson != null) {
                 RequestId requestId = new RequestId();
                 requestId.setChannel_id(channelList.getItems().get(0).getId());
+                requestId.setSubscribe((long) channelList.getItems().get(0).getStatistics().getSubscriberCount());
+                requestId.setVideo_count((long) channelList.getItems().get(0).getStatistics().getVideoCount());
+                requestId.setView_count((long) channelList.getItems().get(0).getStatistics().getViewCount());
                 model.addAttribute("channel_id",requestId.getChannel_id());
+                model.addAttribute("subscribe",requestId.getSubscribe());
+                model.addAttribute("video_count",requestId.getVideo_count());
+                model.addAttribute("view_count",requestId.getView_count());
                 model.addAttribute("resultMsg", "채널인증완료");
                 model.addAttribute("gyeomson", true);
                 return "signup_youtuber";

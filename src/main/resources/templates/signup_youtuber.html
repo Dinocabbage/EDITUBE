@@ -98,6 +98,9 @@
         <button th:disabled="${gyeomson}" type="button" class="signUpButton channelCertificate" onclick="answer">채널인증</button>
       </a></br>
       <input hidden="hidden" type="text" th:value="${channel_id}" id="channel_id" name="channel_id"/>
+      <input hidden="hidden" type="text" th:value="${subscribe}" id="subscribe" name="subscribe"/>
+      <input hidden="hidden" type="text" th:value="${video_count}" id="video_count" name="video_count"/>
+      <input hidden="hidden" type="text" th:value="${view_count}" id="view_count" name="view_count"/>
       <p th:text="${resultMsg}"></p><br>
       <div class="signup-part">
         <div class=box>

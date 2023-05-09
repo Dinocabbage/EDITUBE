@@ -37,9 +37,9 @@ public class UserDao {
         jdbcTemplate.update(sql, user.getEmail(), user.getPassword(), user.getName(), user.getNickname(), user.getPhone_number(),
                 user.getAddress(), user.getDetail_addr(), user.getUser_type(), user.getGender(), user.getBirth_date());
 
-        String sql1 = "INSERT INTO USER_YOUTUBER(YOUTUBER_EMAIL, CHANNEL_ID) " +
-                "VALUES (?, ?)";
-        jdbcTemplate.update(sql1, user.getEmail(), user.getChannel_id());
+        String sql1 = "INSERT INTO USER_YOUTUBER(YOUTUBER_EMAIL, CHANNEL_ID, SUBSCRIBE, VIDEO_COUNT, VIEW_COUNT) " +
+                "VALUES (?, ?, ?, ?, ?)";
+        jdbcTemplate.update(sql1, user.getEmail(), user.getChannel_id(), user.getSubscribe(), user.getVideo_count(), user.getView_count());
     }
 
 

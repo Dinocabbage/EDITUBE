@@ -13,6 +13,9 @@ public class YoutuberRowMapper implements RowMapper<RegisterReqeustChannel> {
         RegisterReqeustChannel uq = new RegisterReqeustChannel();
         uq.setYoutuber_email(rs.getString("youtuber_email"));
         uq.setChannel_id(rs.getString("channel_id"));
+        uq.setSubscribe(rs.getLong("subscribe"));
+        uq.setVideo_count(rs.getLong("video_count"));
+        uq.setView_count(rs.getLong("view_count"));
 
         return uq;
     }

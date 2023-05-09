@@ -45,7 +45,8 @@ public class UserService {
         }
 
         user = new UserDO(req.getEmail(), req.getPassword(), req.getName(), req.getNickname(), req.getPhone_number(), req.getAddress(),
-                req.getDetail_addr(), "유튜버", req.getGender(), LocalDate.parse(req.getBirth_date()), req.getChannel_id());
+                req.getDetail_addr(), "유튜버", req.getGender(), LocalDate.parse(req.getBirth_date()), req.getChannel_id(),
+                req.getSubscribe(), req.getVideo_count(), req.getView_count());
         userDao.createYoutuber(user);
     }
 

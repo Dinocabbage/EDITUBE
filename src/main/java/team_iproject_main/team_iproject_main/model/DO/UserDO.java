@@ -25,6 +25,9 @@ public class UserDO {
     private LocalDateTime register_date;
     private String profile_photo;
     private String channel_id;
+    private Long subscribe;
+    private Long video_count;
+    private Long view_count;
 
     public UserDO (String email, String password, String name, String nickname, String phone_number, String address, String detail_addr, String user_type,
                    String gender, LocalDate birth_date) {
@@ -40,8 +43,9 @@ public class UserDO {
         this.birth_date = birth_date;
     }
 
+
     public UserDO (String email, String password, String name, String nickname, String phone_number, String address, String detail_addr, String user_type,
-                   String gender, LocalDate birth_date, String channel_id) {
+                   String gender, LocalDate birth_date, String channel_id, Long subscribe, Long video_count, Long view_count) {
         this.email = email;
         this.password = password;
         this.name = name;
@@ -53,6 +57,9 @@ public class UserDO {
         this.gender = gender;
         this.birth_date = birth_date;
         this.channel_id = channel_id;
+        this.subscribe = subscribe;
+        this.video_count = video_count;
+        this.view_count = view_count;
     }
 
     public boolean checkPassword(String password) {
