@@ -216,7 +216,7 @@ public class UserController {
         String email = String.valueOf(session.getAttribute("email"));
         UserDO check = userService.findNickname(userUpdateRequest.getNickname());
 
-        if(check != null && userUpdateRequest.getNickname() != String.valueOf(session.getAttribute("nickname"))){
+        if(check != null && !userUpdateRequest.getNickname().equals(String.valueOf(session.getAttribute("nickname")))){
             redirectAttributes.addFlashAttribute("duplicateNickname","이미 존재하는 닉네임 입니다.");
             return "redirect:/myPage";
         }

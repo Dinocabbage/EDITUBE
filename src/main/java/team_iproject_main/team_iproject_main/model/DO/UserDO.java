@@ -3,7 +3,6 @@ package team_iproject_main.team_iproject_main.model.DO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import team_iproject_main.team_iproject_main.exception.WrongIdPasswordException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -54,15 +53,6 @@ public class UserDO {
         this.gender = gender;
         this.birth_date = birth_date;
         this.channel_id = channel_id;
-    }
-
-
-    public void changePassword(String oldPassword, String newPassword) {
-        if(!this.password.equals(oldPassword)) {
-            throw new WrongIdPasswordException();
-        }
-
-        this.password = newPassword;
     }
 
     public boolean checkPassword(String password) {
