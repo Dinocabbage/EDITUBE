@@ -57,11 +57,9 @@ header {
     line-height: 2;
 }
 
-
-
 .accountlogin {
     display: flex;
-    width: 350px;
+    width: 310px;
     justify-content: flex-end;
 }
 
@@ -73,10 +71,6 @@ header {
     font-weight: normal;
     line-height: 2;
 }
-
-
-
-
 
 
 

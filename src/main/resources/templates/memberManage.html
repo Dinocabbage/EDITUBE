@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html  xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <title>마이 페이지: 회원 관리</title>
+  <link rel="stylesheet" href="/style/memberManage.css">
+  <link href="https://fonts.googleapis.com/css?family=Noto+Sans KR&display=swap" rel="stylesheet">
+  <script th:inline="javascript">
+      function onPageNumberClick(page) {
+       window.location.href = `?page=${page}`;
+         }
+
+      function onArrowKeyClick(direction) {
+        let page = parseInt('${page}');
+        if (direction === 'prev') {
+          page--;
+        } else if (direction === 'next') {
+          page++;
+        }
+
+        window.location.href = `?page=${page}`;
+      }
+
+      const pageNumberLinks = document.querySelectorAll('.page-link');
+      pageNumberLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          onPageNumberClick(link.innerHTML);
+        });
+      });
+
+      const prevArrowLink = document.querySelector('.page-item:first-child .page-link');
+      if (prevArrowLink) {
+        prevArrowLink.addEventListener('click', () => {
+          onArrowKeyClick('prev');
+        });
+      }
+
+      const nextArrowLink = document.querySelector('.page-item:last-child .page-link');
+      if (nextArrowLink) {
+        nextArrowLink.addEventListener('click', () => {
+          onArrowKeyClick('next');
+        });
+      }
+  </script>
+
+</head>
+
+<body>
+  <header>
+    <div class="header-container">
+      <div class="headerLogo">
+        <a href="main.html">
+          <img src="img/logo.png" href="#" alt="headerLogo" width="207" height="47">
+        </a>
+      </div>
+      <nav class="menu">
+        <ul>
+          <li><a href="#">구인글 게시판</a></li>
+          <li><a href="#">포트폴리오</a></li>
+          <li><a href="#">고객센터</a></li>
+        </ul>
+      </nav>
+      <div class="account">
+        <a>관리자님 환영합니다.</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div>
+      <h3 class="right_info">회원 관리</h3>
+
+      <div class="root">
+        <form action="findMemberProcess" method="POST">
+        <select name="job" >
+          <option value="email">아이디</option>
+          <option value="nickName">닉네임</option>
+        </select>
+            <input type="text" class="search" name="searchtext" placeholder="검색어 입력">
+            <input class="btn" type="submit" value="검색"/>
+        </form>
+
+        <form action="deleteMember" method="POST"  >
+          <input type="text" name="delete" class="search" placeholder="삭제할 아이디를 넣어주세요">
+          <input class="btn" type="submit" value="삭제"/>
+        </form>
+
+      </div>
+
+      <hr />
+      <div>
+        <table class ="board_list">
+          <thead>
+          <tr>
+            <th>아이디</th>
+            <th>회원 구분</th>
+            <th>이름</th>
+            <th>닉네임</th>
+            <th>가입일</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="members:${members}">
+            <td th:text="${members.email}"></td>
+            <td th:text="${members.userType}"></td>
+            <td th:text="${members.name}"></td>
+            <td th:text="${members.nickName}"></td>
+            <td th:text="${members.register_date}"></td>
+          </tr>
+          </tbody>
+        </table>
+
+      </div>
+
+<!--    <ul class="pagination">-->
+<!--      <li class="page-item"><a class="page-link" th:href="@{/memberManage?page=0}">&laquo;</a></li>-->
+<!--      <li class="page-item" th:classappend="${page == 0 ? 'active' : ''}"><a class="page-link" th:href="@{/memberManage?page=0}">1</a></li>-->
+<!--      <li class="page-item" th:classappend="${page == 1 ? 'active' : ''}"><a class="page-link" th:href="@{/memberManage?page=1}">2</a></li>-->
+<!--      <li class="page-item" th:classappend="${page == 2 ? 'active' : ''}"><a class="page-link" th:href="@{/memberManage?page=2}">3</a></li>-->
+<!--      <li class="page-item" th:classappend="${page == 3 ? 'active' : ''}"><a class="page-link" th:href="@{/memberManage?page=3}">4</a></li>-->
+<!--      <li class="page-item" th:classappend="${page == 4 ? 'active' : ''}"><a class="page-link" th:href="@{/memberManage?page=4}">5</a></li>-->
+<!--      <li class="page-item"><a class="page-link" th:href="@{/memberManage?page=(page+1)}">»</a></li>-->
+<!--    </ul>-->
+
+  </main>
+
+  <footer>
+    <div class="footerContainer">
+      <div class="footerLogo">
+        <img src="img/logo_white.png" alt="footerLogo">
+      </div>
+      <div class="footerInfo">
+        <p>Team_i | 팀장 : 배준영 | 팀원 : 김겸손 김경현 김희수 손주현 양서림 장준원 <br />
+          멀티캠퍼스 백엔드 개발자 취업캠프(Java) 7회차 프로젝트 1조 | github : https://github.com/Dinocabbage/team_i-project</p>
+      </div>
+    </div>
+  </footer>
+</body>
+
+</html>
+
+
+
+
+
+
+<!--<div th:if="${totalPages > 1}">-->
+<!--  <div th:if="${currentPage > 1}">-->
+<!--    <a th:href="@{/page=1}" th:text="'<< First'"></a>-->
+<!--    <a th:href="@{/page=${currentPage-1}}" th:text="'< Previous'"></a>-->
+<!--  </div>-->
+
+<!--  <div th:each="page : ${#numbers.sequence(1, totalPages)}">-->
+<!--    <span th:if="${page == currentPage}" th:text="${page}"></span>-->
+<!--    <a th:if="${page != currentPage}" th:href="@{/page=${page}}" th:text="${page}"></a>-->
+<!--  </div>-->
+
+<!--  <div th:if="${currentPage < totalPages}">-->
+<!--    <a th:href="@{/page=${currentPage+1}}" th:text="'Next >'"></a>-->
+<!--    <a th:href="@{/page=${totalPages}}" th:text="'Last >>'"></a>-->
+<!--  </div>-->
+<!--</div>-->
