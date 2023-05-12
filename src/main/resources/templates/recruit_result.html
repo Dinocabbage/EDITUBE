@@ -1,80 +1,62 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout">
 <head>
     <meta charset="UTF-8">
     <title>구인글 게시판: 게시물 상세</title>
-    <link rel="stylesheet" href="/style/recruit_result.css">
+    <link rel="stylesheet" th:href="@{/style/recruit_result.css}">
     <link href="https://fonts.googleapis.com/css?family=Noto+Sans KR&display=swap" rel="stylesheet">
+    <script th:inline="javascript">
+    var msg=[[${msg}]];
+    if(msg != null){
+      alert(msg);
+    }
+  </script>
 </head>
-
+<th:block layout:fragment="content">
 <body>
-<header>
-    <div class="header-container">
-        <div class="headerLogo">
-            <a href="main.html">
-                <img src="/img/logo.png" href="#" alt="headerLogo" width="207" height="47">
-            </a>
-        </div>
-        <nav class="menu">
-            <ul>
-                <li><a href="#">구인글 게시판</a></li>
-                <li><a href="#">포트폴리오</a></li>
-                <li><a href="#">고객센터</a></li>
-            </ul>
-        </nav>
-        <div class="account">
-            <a>##님 환영합니다.</a>
-            <a href="#">마이 페이지</a>
-            <a href="#">로그아웃</a>
-        </div>
-    </div>
-</header>
+
 <main>
     <div class="job">
-            <div>
-                <h1 >제목 :[[${recruitDO.title}]]  </h1>  <!--RECRUIT_TITLE 제목  -->
-            </div>
-            <hr>
-            <div>
-                유튜버 정보 들어가는 칸 (이미지/채널명/인증마크) <!--RECRUIT_TITLE -->
-            </div>
-            <div>
-                마감일 : [[${recruitDO.deadline}]]<br>       <!--DEADLINE 마감일   -->
-                직무 : [[${recruitDO.duty}]]<br>              <!--DUTY 직무 -->
-                급여 상세 : [[${recruitDO.salary}]]<br>        <!--SALARY 급여 상세 -->
-                우대 사항 : [[${recruitDO.preference}]]<br> <!-- PREFERENCE 우대사항   -->
-                근무 환경 : [[${recruitDO.environment}]]<br>   <!--ENVIRONMENT 근무 환경  -->
-                복리 후생 : [[${recruitDO.welfare}]]<br>    <!--WELFARE 복리후생 -->
-                상세 모집 내용 : [[${recruitDO.recruit_Detail}]] <br>   <!--RECRUIT_DETAIL 상세모집 내용  -->
-            </div>
-            <br>
-            <div>
-                Orginal Video link or Channel link <br>
-                채널 링크 들어 갑니다
-            </div>
+        <div>
+            <h1 >제목 :[[${recruitDO.title}]] </h1>  <!--RECRUIT_TITLE 제목  -->
+        </div>
+        <hr>
+        <div>
+            유튜버 정보 들어가는 칸 (이미지/채널명/인증마크) <!--RECRUIT_TITLE -->
+        </div>
+        <div>
+            채널 카테고리 :[[${categories}]]<br>
+            마감일 : [[${recruitDO.deadline}]]<br>       <!--DEADLINE 마감일   -->
+            직무 : [[${recruitDO.duty}]]<br>              <!--DUTY 직무 -->
+            작업량 : [[${recruitDO.workLoad}]]<br>
+            자격 요건 :[[${recruitDO.RequireMent}]]<br>
+            급여 : [[${recruitDO.salary}]]<br>
+            급여 상세 : [[${recruitDO.salaryDetail}]]<br>
+            우대 사항 : [[${recruitDO.preference}]]<br> <!-- PREFERENCE 우대사항   -->
+            편집 툴 : [[${tools}]]<br>
+            근무 환경 : [[${recruitDO.environment}]]<br>   <!--ENVIRONMENT 근무 환경  -->
+            복리 후생 : [[${recruitDO.welfare}]]<br>    <!--WELFARE 복리후생 -->
+            상세 모집 내용 : [[${recruitDO.recruit_Detail}]] <br>   <!--RECRUIT_DETAIL 상세모집 내용  -->
+        </div>
+        <br>
+        구직자가 편집 해야하는 동영상입니다.
+        <div class='video-container'>
+            <iframe width="560" height="315"  th:src="${recruitDO.original_link}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+        <meta name="description" content="설명">
+        <!--편집자 회원-->
+        <div class="paging1">
+            <a class="btn" th:href="@{/apply(recruitNo=${recruitDO.recruitNo})}" th:if="${recruitDO.overdate} == true and ${session.type == '편집자'}">지원하기</a>
+        </div>
+        <!--작성자(유튜버)-->
+        <a  th:href="@{/recruit_board_modify(recruitNo=${recruitDO.recruitNo})}" th:if ="${recruitDO.overdate} == true and ${recruitDO.email}==${session.email}"  class="btn">수정하기</a>
 
-            <!--편집자 회원-->
-            <button class="btn">지원하기</button>
-            <!--
-            작성자(유튜버)
-            <button class="btn">수정하기</button>
-            -->
-
+        <a class="btn" role="button" th:href="@{/recruit_delete(recruitNo=${recruitDO.recruitNo})}" th:if="${recruitDO.overdate} == true and ${recruitDO.email}==${session.email}">삭제</a>
     </div>
 </main>
 
-<footer>
-    <div class="footerContainer">
-        <div class="footerLogo">
-            <img src="/img/logo_white.png" alt="footerLogo">
-        </div>
-        <div class="footerInfo">
-            <p>Team_i | 팀장 : 배준영 | 팀원 : 김겸손 김경현 김희수 손주현 양서림 장준원 <br />
-                멀티캠퍼스 백엔드 개발자 취업캠프(Java) 7회차 프로젝트 1조 | github : https://github.com/Dinocabbage/team_i-project</p>
-        </div>
-    </div>
-</footer>
 </body>
-
+</th:block>
 </html>

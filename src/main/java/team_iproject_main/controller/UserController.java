@@ -225,7 +225,7 @@ public class UserController {
         return "myPage";
     }
 
-    //5.9 양서림음
+    //5.9 양서림
     @PostMapping("/myPage")
     public String myPageEdit(@ModelAttribute("member") UserUpdateRequest userUpdateRequest, Model model, HttpSession session, RedirectAttributes redirectAttributes){
         String email = String.valueOf(session.getAttribute("email"));
@@ -247,15 +247,17 @@ public class UserController {
     }
 
     @PostMapping("/changepwd")
-    public String Changepwd(@RequestParam(value = "current") String current, @RequestParam(value = "newpwd") String newpwd , Model model, HttpSession session) {
+    public String Changepwd(@RequestParam(value = "current") String current, @RequestParam(value = "newpwd") String newpwd , Model model,
+                            HttpSession session, RedirectAttributes re) {
         String email = String.valueOf(session.getAttribute("email"));
         UserDO userDO = userService.findUser(email);
 
         if(!current.equals(userDO.getPassword())){
-            model.addAttribute("failMsg","비밀번호를 잘못입력하셨습니다. 비밀번호를 확인해주세요.");
+            model.addAttribute("failMsg","현재 비밀번호를 잘못입력하셨습니다. 비밀번호를 확인해주세요.");
             return "changepwd";
         }
         else {
+            re.addAttribute("msg","비밀번호가 변경되었습니다.");
             userService.changePwd(email, newpwd);
             return "redirect:/myPage";
         }

@@ -4,17 +4,18 @@
       layout:decorate="layout">
 <head>
   <meta charset="UTF-8">
-  <link rel="stylesheet" href="/style/signup_youtuber.css">
+  <link rel="stylesheet" th:href="@{/style/signup_youtuber.css}">
   <title>회원가입: 유튜버</title>
   <link href="https://fonts.googleapis.com/css?family=Noto+Sans KR&display=swap" rel="stylesheet">
-  <script type="text/javascript" src="/script/signup.js"></script>
+  <script type="text/javascript" th:src="@{/script/signup.js}"></script>
   <script th:inline="javascript">
     var errorMsg = [[${msg}]];
     if (errorMsg != null){
       alert(errorMsg);
-    }s
+    }
   </script>
-  <script>
+  <script th:inline="javascript">
+        var addressSearch = [[@{/address-search}]];
 
         function save(){
             const useremail = document.getElementById("email").value;
@@ -70,7 +71,7 @@
         }
 
         function road() {
-             const popup = window.open("/address-search","Popup", "width=800, height=700");
+             const popup = window.open(addressSearch,"Popup", "width=800, height=700");
 
              popup.onbeforeunload=(data)=>{
                  console.log(data)
@@ -92,10 +93,10 @@
 <th:block layout:fragment="content">
 <body>
   <main>
-    <form id="signupForm" name="signupForm" method="POST" action = "/signup_youtuber">
+    <form id="signupForm" name="signupForm" method="POST" th:action = "@{/signup_youtuber}">
       <h1 class="signup-title">유튜버 회원가입</h1>
-      <a href="answer">
-        <button th:disabled="${gyeomson}" type="button" class="signUpButton channelCertificate" onclick="answer">채널인증</button>
+      <a th:href="@{answer}">
+        <button th:disabled="${gyeomson}" type="button" class="signUpButton channelCertificate" th:onclick="@{/answer}">채널인증</button>
       </a></br>
       <input hidden="hidden" type="text" th:value="${channel_id}" id="channel_id" name="channel_id"/>
       <p th:text="${resultMsg}"></p><br>

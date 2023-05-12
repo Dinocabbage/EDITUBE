@@ -7,6 +7,7 @@ import java.time.LocalDate;
 @Data
 public class PortfolioDO {
     private String email;
+    private String nickname;
     private String ispublic;
     private String workable;
     private String othercareer; //경력

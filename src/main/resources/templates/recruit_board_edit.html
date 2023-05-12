@@ -8,14 +8,59 @@
   <meta charset="UTF-8">
   <title>구인글 게시판: 게시물 작성</title>
   <link href="https://fonts.googleapis.com/css?family=Noto+Sans KR&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/style/recruit_board_edit.css">
+  <link rel="stylesheet" th:href="@{/style/recruit_board_edit.css}">
+  <script th:inline="javascript">
+    function submitHandler() {
+
+      const channel = 'input[name="channel_categories"]:checked';
+      const selectedchannel =
+              document.querySelectorAll(channel);
+      let channel_result = '';
+      selectedchannel.forEach((el) => {
+        channel_result += el.value + ' ';
+      });
+
+      const tools = 'input[name="edit_tools"]:checked';
+      const selectedtools =
+              document.querySelectorAll(tools);
+
+      let tools_result = '';
+      selectedtools.forEach((el) => {
+        tools_result += el.value + ' ';
+      })
+
+      if(channel_result == '') {
+        alert("채널 카테고리를 하나 이상 선택하세요");
+        return false;
+      }
+      else if(tools_result == '') {
+        alert("편집툴을 하나 이상 선택하세요");
+        return false;
+      }
+      else{
+        alert("구인글이 등록되었습니다.");
+      }
+
+    }
+
+    function init() {
+      var signupForm = document.querySelector('#signupForm');
+      signupForm.onsubmit = submitHandler;
+    }
+    window.onload = init;
+
+    var msg=[[${errormsg}]];
+    if(msg != null){
+      alert(msg);
+    }
+  </script>
 </head>
 
 <th:block layout:fragment="content">
 <body>
   <main>
     <div class="job">
-      <form id="signupForm" name="signupForm" method="POST" action = "/recruit_board_edit">
+      <form id="signupForm" name="signupForm" method="POST" th:action = "@{/recruit_board_edit}">
         <div>
           <h1>제목 : <input type="text" placeholder="제목을 입력하세요" id="" name = "recruit_title" required></h1>
         </div>
@@ -41,7 +86,7 @@
             <label><input type="checkbox" name="channel_categories" value = "동물"> 동물</label>
             <label><input type="checkbox" name="channel_categories" value = "기타"> 기타</label>
           </span><br>
-          마감일 : <input type="date" name="deadline"><br>
+          마감일 : <input type="date" name="deadline" required><br>
           직무 : <input type="text" placeholder="직무를 입력 하세요" name = "duty" required><br>
           작업량 : <input type="text" placeholder="일주일 작업량을 입력 하세요" name = "workload" required><br>
           자격 요건 : <input type="text" placeholder="자격요건을 입력 하세요" name = "requirement" required><br>
@@ -76,7 +121,7 @@
           <input type="text" placeholder = "www.youtube.com" name = "original_link" required>
         </div>
 
-        <button class="btn" type = "submit">작성완료</button>
+        <button class="btn" onsubmit="init()" type = "submit">작성완료</button>
 
       </form>
     </div>

@@ -1,35 +1,23 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout">
 
 <head>
   <meta charset="UTF-8">
   <title>포트폴리오 조회</title>
-  <link rel="stylesheet" href="/style/portfolio_result.css">
+  <link rel="stylesheet" th:href="@{/style/portfolio_result.css}">
   <link href="https://fonts.googleapis.com/css?family=Noto+Sans KR&display=swap" rel="stylesheet">
+  <script th:inline="javascript">
+    var msg=[[${msg}]];
+    if(msg != null){
+      alert(msg);
+    }
+  </script>
 </head>
 
+<th:block layout:fragment="content">
 <body>
-  <header>
-    <div class="header-container">
-      <div class="headerLogo">
-        <a href="main.html">
-          <img src="/img/logo.png" href="#" alt="headerLogo" width="207" height="47">
-        </a>
-      </div>
-      <nav class="menu">
-        <ul>
-          <li><a href="#">구인글 게시판</a></li>
-          <li><a href="#">포트폴리오</a></li>
-          <li><a href="#">고객센터</a></li>
-        </ul>
-      </nav>
-      <div class="account">
-        <a>##님 환영합니다.</a>
-        <a href="#">마이 페이지</a>
-        <a href="#">로그아웃</a>
-      </div>
-    </div>
-  </header>
   <main>
     <div>
       <h3 class="title">제목 : [[${portfolioDO.title}]] </h3>
@@ -112,20 +100,11 @@
       </div>
     </div>
 
-    <button class="btn">수정</button>
-    </form>
-  </main>
-  <footer>
-    <div class="footerContainer">
-      <div class="footerLogo">
-        <img src="/img/logo_white.png" alt="footerLogo">
-      </div>
-      <div class="footerInfo">
-        <p>Team_i | 팀장 : 배준영 | 팀원 : 김겸손 김경현 김희수 손주현 양서림 장준원 <br />
-          멀티캠퍼스 백엔드 개발자 취업캠프(Java) 7회차 프로젝트 1조 | github : https://github.com/Dinocabbage/team_i-project</p>
-      </div>
-    </div>
-  </footer>
-</body>
 
+    <a class="btn" role="button" th:href="@{/portfolio_edit(email=${portfolioDO.email})}" >수정</a>
+    <a class="btn" role="button" th:href="@{/portfolio_delete(email1=${portfolioDO.email})}" >삭제</a>
+
+  </main>
+</body>
+</th:block>
 </html>

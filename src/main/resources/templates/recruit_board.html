@@ -1,67 +1,63 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="layout">
 
 <head>
     <meta charset="UTF-8">
     <title>구인글 게시판</title>
     <link href="https://fonts.googleapis.com/css?family=Noto+Sans KR&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/style/recruit_board.css">
+    <link rel="stylesheet" th:href="@{/style/recruit_board.css}">
+    <script th:inline="javascript">
+        function check(e){
+            var usertype = [[${session.type}]];
+
+            if(usertype == null){
+                alert("로그인 후 이용 가능합니다.");
+                e.preventDefault();
+                return false;
+            }
+            else if(usertype == "편집자"){
+                alert("유튜버만 이용가능한 서비스입니다.");
+                e.preventDefault();
+                return false;
+            }
+        }
+        var Msg = [[${msg}]];
+        if (Msg != null){
+            alert(Msg);
+        }
+    </script>
 </head>
+<th:block layout:fragment="content">
 
 <body>
-<header>
-    <div class="header-container">
-        <div class="headerLogo">
-            <a href="main.html">
-                <img src="/img/logo.png" href="#" alt="headerLogo" width="207" height="47">
-            </a>
-        </div>
-        <nav class="menu">
-            <ul>
-                <li><a href="#">구인글 게시판</a></li>
-                <li><a href="#">포트폴리오</a></li>
-                <li><a href="#">고객센터</a></li>
-            </ul>
-        </nav>
-        <div class="account">
-            <a>##님 환영합니다.</a>
-            <a href="#">마이 페이지</a>
-            <a href="#">로그아웃</a>
-        </div>
-    </div>
-</header>
 
 <main>
     <div class="board_list_wrap">
-        <h1><input class="search" placeholder="검색어를 입력하세요"></h1>
-        <hr />
-        <div>· 구독자 수 : <input type="number" class="search1" placeholder="구독자수를 입력하세요"></div>
-        <div>· 급여 : <input type="number" class="search1" placeholder="금액을 입력하세요"></div>
-        <div>· 근무 지역 : <input class="search2" placeholder="지역을 입력하세요">
-            <label for="maya">재택 근무</label>
-            <input type="checkbox" name="editing-tools" id="maya">
-        </div>
-        <div class="filters">
-            <b>· 편집 툴 : </b>
-            <label for="premier-pro">프리미어 프로</label>
-            <input type="checkbox" name="editing-tools" id="premier-pro">
-            <label for="after-effects">애프터 이펙트</label>
-            <input type="checkbox" name="editing-tools" id="after-effects">
-            <label for="vegas">베가스</label>
-            <input type="checkbox" name="editing-tools" id="vegas">
-            <label for="final-cut">파이널 컷</label>
-            <input type="checkbox" name="editing-tools" id="final-cut">
-            <label for="power-director">파워디렉터</label>
-            <input type="checkbox" name="editing-tools" id="power-director">
-            <label for="photoshop">포토샵</label>
-            <input type="checkbox" name="editing-tools" id="photoshop">
-            <label for="illustrator">일러스트</label>
-            <input type="checkbox" name="editing-tools" id="illustrator">
-            <label for="maya">MaYa</label>
-            <input type="checkbox" name="editing-tools" id="maya">
-            <label for="blender">Blender</label>
-            <input type="checkbox" name="editing-tools" id="blender">
-        </div>
+        <form th:action="@{/recruit_board/search}" method="POST" modelAttribute="searchForm">
+            <h1><input class="search" id="search_text" name="search_text" placeholder="검색어를 입력하세요"></h1>
+            <button type="submit">검색</button>
+            <hr />
+            <div>· 구독자 수 : <input type="number" class="search1" id="subscribe_no" name="subscribe_no" placeholder="구독자수를 입력하세요"></div>
+            <div>· 급여 : <input type="number" class="search1" id="salary_no" name="salary_no" placeholder="금액을 입력하세요"></div>
+            <div>· 근무 지역 : <input class="search2" id="environment_no" name="environment_no" placeholder="지역을 입력하세요"></div>
+            <div class="filters">
+                <span class="titleText">편집 툴 : </span>
+                <span class="inputBox" name = "edits">
+            <label><input type="checkbox" name="edit_tools_no" value = "프리미어프로"> 프리미어 프로</label>
+            <label><input type="checkbox" name="edit_tools_no" value = "애프터이펙트"> 애프터 이펙트</label>
+            <label><input type="checkbox" name="edit_tools_no" value = "베가스"> 베가스</label>
+            <label><input type="checkbox" name="edit_tools_no" value = "파이널컷"> 파이널 컷</label>
+            <label><input type="checkbox" name="edit_tools_no" value = "파워디렉터"> 파워 디렉터</label>
+            <label><input type="checkbox" name="edit_tools_no" value = "포토샵"> 포토샵</label><br>
+            <label><input type="checkbox" name="edit_tools_no" value = "일러스트레이터"> 일러스트레이터</label>
+            <label><input type="checkbox" name="edit_tools_no" value = "마야"> MaYa</label>
+            <label><input type="checkbox" name="edit_tools_no" value = "블렌더"> Blender</label>
+            <label><input type="checkbox" name="edit_tools_no" value = "기타"> 기타</label>
+          </span><br>
+            </div>
+        </form>
         <hr />
         <table class="board_list">
 
@@ -81,33 +77,32 @@
                 <td>[[${recruitDO.recruitNo}]]</td>
                 <td ><a th:href="@{/recruit_result(recruitNo= ${recruitDO.recruitNo})}">[[${recruitDO.title}]] </a></td>
                 <td>[[${recruitDO.deadline}]]</td>
-                <td>[[${recruitDO.email}]]</td>
+                <td>[[${recruitDO.channel_name}]]</td>
             </tbody>
         </table>
+
         <div class="paging">
-            <a href="#" class="bt"><</a>
-            <a href="#" class="num on">1</a>
-            <a href="#" class="num">2</a>
-            <a href="#" class="num">3</a>
-            <a href="#" class="bt">></a>
+            <a th:href="@{/recruit_board(page=1)}" th:class="${currentPage == 1} ? 'bt disabled' : 'bt'"><<</a>
+            <a th:href="@{/recruit_board(page=${currentPage != 1 ? currentPage - 1 : currentPage})}" th:class="${currentPage == 1} ? 'bt disabled' : 'bt'"><</a>
+
+            <th:block th:each="pageNumber : ${#numbers.sequence(startPage, endPage)}">
+                <a th:href="@{/recruit_board(page=${pageNumber})}" th:class="${pageNumber == currentPage} ? 'num on' : 'num'">
+                    [[${pageNumber}]]
+                </a>
+            </th:block>
+
+            <a th:href="@{/recruit_board(page=${currentPage != totalPages ? currentPage + 1 : currentPage})}" th:class="${currentPage == totalPages} ? 'bt disabled' : 'bt'">></a>
+            <a th:href="@{/recruit_board(page=${totalPages})}" th:class="${currentPage == totalPages} ? 'bt disabled' : 'bt'">>></a>
         </div>
         <div class="paging1">
-            <a href="#" class="bt">구인글 작성</a>
+            <a th:href="@{/recruit_board_edit}" class="bt" th:text="|구인글 작성|" th:onclick="check(event)"></a>
         </div>
+
+
     </div>
 </main>
 
-<footer>
-    <div class="footerContainer">
-        <div class="footerLogo">
-            <img src="/img/logo_white.png" alt="footerLogo">
-        </div>
-        <div class="footerInfo">
-            <p>Team_i | 팀장 : 배준영 | 팀원 : 김겸손 김경현 김희수 손주현 양서림 장준원 <br />
-                멀티캠퍼스 백엔드 개발자 취업캠프(Java) 7회차 프로젝트 1조 | github : https://github.com/Dinocabbage/team_i-project</p>
-        </div>
-    </div>
-</footer>
-</body>
 
+</body>
+</th:block>
 </html>

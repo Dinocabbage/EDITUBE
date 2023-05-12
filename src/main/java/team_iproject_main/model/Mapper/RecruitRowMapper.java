@@ -24,8 +24,9 @@ public class RecruitRowMapper implements RowMapper<RecruitDO> {
         recruitDO.setRecruit_Detail(rs.getString("RECRUIT_DETAIL"));
         recruitDO.setSalary(rs.getString("SALARY"));
         recruitDO.setDeadline(rs.getDate("DEADLINE").toLocalDate());
-        recruitDO.setOriginallink(rs.getString("ORIGINAL_LINK"));
+        recruitDO.setOriginal_link(rs.getString("ORIGINAL_LINK"));
         recruitDO.setPostdate(rs.getTimestamp("POST_DATE").toLocalDateTime());
+
         return recruitDO;
     }
 }

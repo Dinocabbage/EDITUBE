@@ -56,7 +56,7 @@ public class ApiController {
         return "addresspop";
     }
 
-    @GetMapping("address-search")
+    @GetMapping("/address-search")
     public String addressSearch(){
         return "addressSearch";
     }

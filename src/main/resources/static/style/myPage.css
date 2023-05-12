@@ -5,7 +5,7 @@
 }
 
 main {
-    width: 1100px;
+    width: 1300px;
     display: flex;
     margin: 0 auto;
     margin-top: 5%;
@@ -14,7 +14,7 @@ main {
 
 .sideBar {
     float: left;
-    width: 33.33%;
+    width: 26.33%;
     border-right: 1px solid #333;
     /*구분선*/
     height: 100vh;
@@ -62,7 +62,7 @@ main {
 
 .main {
     float: left;
-    width: 50%;
+    width: 65%;
     height: 100vh;
     padding: 50px;
 
@@ -140,6 +140,7 @@ main {
     text-align: center;
     font-size: 17px;
     margin-bottom: 30px;
+    margin-left: 60%;
 }
 
 .submit:hover {
@@ -161,4 +162,34 @@ main {
 
 .duplicateNickname {
     color: red;
+}
+
+input[type="text"] {
+    width: 310px;
+}
+
+#birth_date {
+    border: none;
+    background-color: transparent;
+}
+
+.searchAddrButton {
+  background-color: rgba(37.00000159442425, 107.00000122189522, 244.0000006556511, 1);
+  width: 100px;
+  height: 45px;
+  position: absolute;
+  right: -110px;
+  border-radius: 30px;
+  border: none;
+  color: rgba(255, 255, 255, 1);
+  text-align: center;
+  font-size: 17px;
+  transform: translateY(-50%);
+  top: 50%;
+}
+
+.searchAddrButton:hover {
+  background-color: #ffffff;
+  color: #256BF4;
+  border: 2px solid #256BF4;
 }

@@ -12,6 +12,7 @@ public class PortfolioRowMapper implements RowMapper<PortfolioDO> {
     public PortfolioDO mapRow(ResultSet rs, int rowNum) throws SQLException {
         PortfolioDO portfolioDO = new PortfolioDO();
         portfolioDO.setEmail(rs.getString("EDITOR_EMAIL"));
+        portfolioDO.setNickname(rs.getString("NICKNAME"));
         portfolioDO.setIspublic(rs.getString("IS_PUBLIC"));
         portfolioDO.setWorkable(rs.getString("WORKABLE_LOCATION"));
         portfolioDO.setOthercareer(rs.getString("OTHER_CAREER"));
