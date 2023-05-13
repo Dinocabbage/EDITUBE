@@ -14,11 +14,11 @@ public class PortfolioRowMapper implements RowMapper<PortfolioDO> {
         portfolioDO.setEmail(rs.getString("EDITOR_EMAIL"));
         portfolioDO.setNickname(rs.getString("NICKNAME"));
         portfolioDO.setIspublic(rs.getString("IS_PUBLIC"));
-        portfolioDO.setWorkable(rs.getString("WORKABLE_LOCATION"));
+        portfolioDO.setWorkable_location(rs.getString("WORKABLE_LOCATION"));
         portfolioDO.setOthercareer(rs.getString("OTHER_CAREER"));
         portfolioDO.setMessage(rs.getString("MESSAGE"));
-        portfolioDO.setTitle(rs.getString("PORTFOLIO_TITLE"));
-        portfolioDO.setPostdate(rs.getDate("POST_DATE").toLocalDate());
+        portfolioDO.setPortfolio_title(rs.getString("PORTFOLIO_TITLE"));
+        portfolioDO.setPost_date(rs.getDate("POST_DATE").toLocalDate());
         portfolioDO.setDesiredsalary(rs.getInt("DESIRED_SALARY"));
         portfolioDO.setDesiredworktype(rs.getString("DESIRED_WORK_TYPE"));
         portfolioDO.setMessagetoyoutuber(rs.getString("MESSAGE_TO_YOUTUBER"));

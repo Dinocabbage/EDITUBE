@@ -290,23 +290,66 @@ public class UserController {
 
     //희수
     //관리자 (회원 조회)
-    @GetMapping("memberManage")
-    public String list(Model model) {
-        List<UserDO> members = userService.findMembers();
+    @GetMapping("/memberManage")
+    public String list(@RequestParam(value = "page", defaultValue = "1") int page, Model model) {
+        int postsPerPage = 10;
+        int pageNavigationLinks = 5;
+
+        List<UserDO> members = userService.findMembers(page, postsPerPage);
         model.addAttribute("members", members);
+
+        int totalPosts = userService.getTotalResults();
+        int totalPages = (int) Math.ceil((double) totalPosts / postsPerPage);
+        int startPage = Math.max(1, page - (pageNavigationLinks / 2));
+        int endPage = Math.min(startPage + pageNavigationLinks - 1, totalPages);
+
+        model.addAttribute("currentPage", page);
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+        model.addAttribute("totalPages", totalPages);
+
         return "memberManage";
     }
     //희수
     //id(이메일),닉네임 조회
-    @PostMapping("findMemberProcess")
-    public String findid(@RequestParam(value = "job") String job, @RequestParam(value = "searchtext") String searchtext, Model model) {
-        List<UserDO> members = userService.findMember(job, searchtext);
+    @PostMapping("/memberManage/search")
+    public String findidPost(@RequestParam(value = "page", defaultValue = "1") int page, HttpSession session,
+                         @ModelAttribute("userSearchRequest") UserSearchRequest userSearchRequest, Model model) {
+        if(userSearchRequest.getSearchtext().equals("")) {
+            return list(1, model);
+        }
+
+        session.setAttribute("userSearchRequest", userSearchRequest);
+        return "redirect:/memberManage/search";
+    }
+
+    @GetMapping("/memberManage/search")
+    public String findid(@RequestParam(value = "page", defaultValue = "1") int page
+            , Model model, HttpSession session) {
+        UserSearchRequest userSearchRequest = (UserSearchRequest)session.getAttribute("userSearchRequest");
+
+        int postsPerPage = 10;
+        int pageNavigationLinks = 5;
+
+        List<UserDO> members = userService.findMember(userSearchRequest, page, postsPerPage);
         model.addAttribute("members", members);
-        return "memberManage";
+
+        int totalPosts = userService.getTotalSearch(userSearchRequest);
+        int totalPages = (int) Math.ceil((double) totalPosts / postsPerPage);
+        int startPage = Math.max(1, page - (pageNavigationLinks / 2));
+        int endPage = Math.min(startPage + pageNavigationLinks - 1, totalPages);
+
+        model.addAttribute("currentPage", page);
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+        model.addAttribute("totalPages", totalPages);
+        session.setAttribute("userSearchRequest", userSearchRequest);
+
+        return "memberSearch";
     }
     //희수
     //유저 삭제
-    @PostMapping("deleteMember")
+    @PostMapping("/deleteMember")
     public String delectId(@RequestParam(value = "delete") String email, Model model) {
         userService.deleteMember(email);
         return "memberManage";

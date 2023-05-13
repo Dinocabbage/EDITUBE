@@ -27,6 +27,80 @@
     window.onload = init;
 
   </script>
+  <script th:inline="javascript">
+        var addressSearch = [[@{/address-search}]];
+
+        function save(){
+            const useremail = document.getElementById("email").value;
+            const password1 = document.getElementById("password").value;
+            const password2 = document.getElementById("confirmPassword").value;
+            const username = document.getElementById("name").value;
+            const usernickname = document.getElementById("nickname").value;
+            const userphone = document.getElementById("phone_number").value;
+            const address1 = document.getElementById("input-address").value;
+            const address2 = document.getElementById("input-detail-address").value;
+            const gender = document.getElementById("gender").value;
+            const userbirth = document.getElementById("birth_date").value;
+
+            const userdata = {
+                email : useremail,
+                password : password1,
+                confirmPssword : password2,
+                name : username,
+                nickname : usernickname,
+                phone_number : userphone,
+                address : address1,
+                detail_addr : address2,
+                gender : gender,
+                birth_date : userbirth,
+            }
+
+            $.ajax({
+                url :"/try-join",
+                type:"post",
+                dataType : "json", // ajax가 받을때 자료형
+                contentType:"application/json", // 보낼때 자료형
+                data: JSON.stringify(userdata),
+                success:function(data){
+                    console.log(data)
+
+                    if(data.result == "성공!"){
+                        alert("회원가입 성공")
+                        location.href = "/";
+                    }else{
+                        alert("가입 실패 ㅠㅠ")
+                    }
+
+                    //console.log(result);
+                },
+                error: function (request, status, error){
+                    console.log(error)
+                    console.log(status)
+                    console.log(request)
+                    //실패햇을때 성공 로직.
+                    alert("가입 실패");
+                }
+            })
+        }
+
+        function road() {
+             const popup = window.open(addressSearch,"Popup", "width=800, height=700");
+
+             popup.onbeforeunload=(data)=>{
+                 console.log(data)
+                 console.log("데이터 체크")
+            }
+             // 팝업창에 데이터 쓰기
+             popup.document.write(data);
+        }
+
+        function test(){
+            $.ajax({
+                url: "https://business.juso.go.kr/addrlink/addrLinkUrl.do?confmKey=U01TX0FVVEgyMDIzMDUwMjE0MTI1MDExMzczNzM=&returnUrl=http://localhost:3030/road-return&resultType=4",
+                type: "GET",
+            })
+        }
+    </script>
 </head>
 
 <th:block layout:fragment="content">
@@ -104,13 +178,14 @@
 
         <div class="addressPart">
           <div class=addressArea>
-            <span class="addressText">주소</span>
+            <span class="addressText">도로명 주소</span>
             <div class=addressInput>
               <input type="text" id="address" placeholder="서울특별시 강남구 언주로 508" class="address"
                      style="border: none; background: transparent;"
                      th:value="${user.address}" name="address" >
             </div>
           </div>
+          <button type="button" onclick="road()" class=searchAddrButton>주소찾기</button>
         </div>
 
         <div class="detailaddressPart">

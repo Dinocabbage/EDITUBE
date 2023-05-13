@@ -8,6 +8,7 @@ import team_iproject_main.model.DO.UserDO;
 import team_iproject_main.model.Mapper.UserRowMapper;
 import team_iproject_main.model.Mapper.YoutuberRowMapper;
 import team_iproject_main.model.Request.RegisterReqeustChannel;
+import team_iproject_main.model.Request.UserSearchRequest;
 import team_iproject_main.model.Request.UserUpdateRequest;
 
 import java.time.LocalDate;
@@ -31,15 +32,16 @@ public class UserDao {
         jdbcTemplate.update(sqluqid, user.getEmail(), "FALSE");
     }
 
+    // 겸손 추가
     public void createYoutuber(UserDO user) {
         String sql = "INSERT INTO USER_INFO(EMAIL, PASSWORD, NAME, NICKNAME, PHONE_NUMBER, ADDRESS, DETAIL_ADDR, USER_TYPE, GENDER, BIRTH_DATE) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         jdbcTemplate.update(sql, user.getEmail(), user.getPassword(), user.getName(), user.getNickname(), user.getPhone_number(),
                 user.getAddress(), user.getDetail_addr(), user.getUser_type(), user.getGender(), user.getBirth_date());
 
-        String sql1 = "INSERT INTO USER_YOUTUBER(YOUTUBER_EMAIL, CHANNEL_ID) " +
-                "VALUES (?, ?)";
-        jdbcTemplate.update(sql1, user.getEmail(), user.getChannel_id());
+        String sql1 = "INSERT INTO USER_YOUTUBER(YOUTUBER_EMAIL, CHANNEL_ID, SUBSCRIBE, VIDEO_COUNT, VIEW_COUNT, CHANNEL_NAME) " +
+                "VALUES (?, ?, ?, ?, ?, ?)";
+        jdbcTemplate.update(sql1, user.getEmail(), user.getChannel_id(), user.getSubscribe(), user.getVideo_count(), user.getView_count(), user.getChannel_name());
     }
 
 
@@ -57,16 +59,31 @@ public class UserDao {
 
     //희수
     //관리자 회원 검색
-    public List<UserDO> userFindById(String job, String searchtext) {
-        List<UserDO> result = jdbcTemplate.query("select * from USER_INFO where "+job+" like '%"+searchtext+"%'", new UserRowMapper()); //스테이트먼트 프리페어드스테이트먼트 방식 sql문
+    // 준영 페이징 추가
+    public List<UserDO> userFindById(UserSearchRequest userSearchRequest, int postsPerPage, int offset) {
+        String sql = "SELECT * FROM (SELECT ROWNUM AS rn, u.* FROM USER_INFO u) " +
+                "WHERE " + userSearchRequest.getJob() + " like '%" + userSearchRequest.getSearchtext() + "%' " +
+                "AND rn BETWEEN ? AND ?";
+
+        List<UserDO> result = jdbcTemplate.query(sql, new Object[]{offset + 1, offset + postsPerPage}, new UserRowMapper());
         return result;
+    }
+
+    // 준영 페이징 추가
+    public int getTotalSearch(UserSearchRequest userSearchRequest) {
+        return jdbcTemplate.queryForObject("select COUNT(*) from USER_INFO where " + userSearchRequest.getJob() + " like '%" + userSearchRequest.getSearchtext() + "%'", Integer.class);
     }
 
     //희수
     //유저 전체 조회
+    //준영 페이징 추가
+    public List<UserDO> findAll(int postsPerPage, int offset) {
+        String sql = "SELECT * FROM (SELECT ROWNUM AS rn, u.* FROM USER_INFO u) WHERE rn BETWEEN ? AND ?";
+        return jdbcTemplate.query(sql, new Object[]{offset + 1, offset + postsPerPage}, new UserRowMapper());
+    }
 
-    public List<UserDO> findAll() {
-        return jdbcTemplate.query("select * from USER_INFO", new UserRowMapper());
+    public int getTotalResults() {
+        return jdbcTemplate.queryForObject("SELECT COUNT(*) FROM USER_INFO", Integer.class);
     }
 
     //0506-손주현

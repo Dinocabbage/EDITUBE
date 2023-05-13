@@ -19,10 +19,10 @@
       <h3 class="right_info">회원 관리</h3>
 
       <div class="root">
-        <form th:action="@{/memberManage/search}" method="POST" modelAttribute="keyword">
+        <form th:action="@{/memberManage/search}" method="POST" modelAttribute="userSearchRequest">
         <select name="job" >
-          <option value="email">아이디</option>
-          <option value="nickName">닉네임</option>
+          <option value="email" th:selected="${session.userSearchRequest.job == 'email'}">아이디</option>
+          <option value="nickname" th:selected="${session.userSearchRequest.job == 'nickname'}">닉네임</option>
         </select>
             <input type="text" class="search" name="searchtext" placeholder="검색어 입력">
             <input class="btn" type="submit" value="검색"/>

@@ -97,13 +97,34 @@ public class PortfolioController {
     //희수
     //포트폴리오 삭제
     @GetMapping("/portfolio_delete")
-    public String portfolio_delete(String email1, HttpSession session, RedirectAttributes redirectAttributes) {
+    public String portfolio_delete(String email1, HttpSession session, RedirectAttributes redirectAttributes, Model model) {
 
         if(!email1.equals(String.valueOf(session.getAttribute("email")))){
             redirectAttributes.addFlashAttribute("msg","작성자만 삭제 할 수 있습니다.");
             return "redirect:/portfolio_result?email=" + email1;
         }
         portfolioService.deletePortfole(email1);
-        return "portfolio_board";
+        return list2(1, model);
+    }
+
+    // 겸손
+    @PostMapping("/portfolio_board/search")
+    public String portfolio_board_search(
+            @RequestParam("folio_search_text") String folio_search_text,
+            @RequestParam("location") String location,
+            @RequestParam(value = "edit_tools_folio", required = false) String[] edit_tools_folio,
+            Model model) {
+        if((edit_tools_folio == null || edit_tools_folio.length == 0)&& folio_search_text.equals("") && location.equals("")) {
+            return list2(1, model);
+        }
+
+        if(edit_tools_folio == null) {
+            edit_tools_folio = new String[]{};
+        }
+
+        List<PortfolioDO> portfolioDO = portfolioService.PoforFinder(folio_search_text, location, edit_tools_folio);
+        model.addAttribute("portfolioDO", portfolioDO);
+
+        return "Portfolio_finder";
     }
 }

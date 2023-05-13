@@ -46,7 +46,8 @@ public class UserService {
         }
 
         user = new UserDO(req.getEmail(), req.getPassword(), req.getName(), req.getNickname(), req.getPhone_number(), req.getAddress(),
-                req.getDetail_addr(), "유튜버", req.getGender(), LocalDate.parse(req.getBirth_date()), req.getChannel_id());
+                req.getDetail_addr(), "유튜버", req.getGender(), LocalDate.parse(req.getBirth_date()), req.getChannel_id(),
+                req.getSubscribe(), req.getVideo_count(), req.getView_count(), req.getChannel_name());
         userDao.createYoutuber(user);
     }
 
@@ -57,8 +58,14 @@ public class UserService {
 
     //희수
     //전체 회원 조회
-    public List<UserDO> findMembers() {
-        return userDao.findAll();
+    //준영 페이징 추가
+    public List<UserDO> findMembers(int page, int postsPerPage) {
+        int offset = (page - 1) * postsPerPage;
+        return userDao.findAll(postsPerPage, offset);
+    }
+
+    public int getTotalResults() {
+        return userDao.getTotalResults();
     }
 
     //희수
@@ -69,8 +76,13 @@ public class UserService {
 
     //희수
     //회원 id,닉네임 검색
-    public List<UserDO> findMember(String job, String searchtext) {
-        return userDao.userFindById(job, searchtext);
+    public List<UserDO> findMember(UserSearchRequest userSearchRequest, int page, int postsPerPage) {
+        int offset = (page - 1) * postsPerPage;
+        return userDao.userFindById(userSearchRequest, postsPerPage, offset);
+    }
+
+    public int getTotalSearch(UserSearchRequest userSearchRequest) {
+        return userDao.getTotalSearch(userSearchRequest);
     }
 
     //0506-손주현 findUser 메소드 오버로딩

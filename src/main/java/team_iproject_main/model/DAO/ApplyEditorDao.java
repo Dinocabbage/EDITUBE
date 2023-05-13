@@ -53,11 +53,19 @@ public class ApplyEditorDao {
 
     //준원 0511
     // 유튜버 작성한 구인글 지원자 확인
-    public List<ApplierListDO> myRecruitApplierList(int recruitNo) {
-        String sql = "SELECT E.RECRUIT_NO, P.PORTFOLIO_TITLE, U.NICKNAME, U.EMAIL " +
+    public List<ApplierListDO> myRecruitApplierList(int recruitNo, int postsPerPage, int offset) {
+
+        String sql = "SELECT * FROM (SELECT ROWNUM AS rn, a.* FROM (SELECT E.RECRUIT_NO, P.PORTFOLIO_TITLE, U.NICKNAME, U.EMAIL " +
+                "FROM APPLY_EDITOR E JOIN USER_INFO U ON E.EDITOR_EMAIL = U.EMAIL JOIN PORTFOLIO P ON U.EMAIL = P.EDITOR_EMAIL " +
+                "WHERE E.RECRUIT_NO = ? ORDER BY E.RECRUIT_NO DESC) a) WHERE rn BETWEEN ? AND ?";
+        return jdbcTemplate.query(sql, new Object[]{recruitNo, offset + 1, offset + postsPerPage}, new ApplierListRowMapper());
+    }
+
+    public int getTotalApplier(int recruitNo) {
+        String sql = "SELECT COUNT(*) FROM (SELECT E.RECRUIT_NO, P.PORTFOLIO_TITLE, U.NICKNAME, U.EMAIL " +
                 "FROM (APPLY_EDITOR E) JOIN (USER_INFO U) ON (E.EDITOR_EMAIL LIKE U.EMAIL) JOIN PORTFOLIO P ON (U.EMAIL LIKE P.EDITOR_EMAIL) " +
-                "WHERE E.RECRUIT_NO = ?";
-        return jdbcTemplate.query(sql, new ApplierListRowMapper(), recruitNo);
+                "WHERE E.RECRUIT_NO = ? )";
+        return jdbcTemplate.queryForObject(sql, Integer.class, recruitNo);
     }
 
 }

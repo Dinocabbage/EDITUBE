@@ -46,6 +46,19 @@
           <td><button class="btn">편집영상확인</button></td>
         </tr>
       </table>
+      <div class="paging">
+        <a th:href="@{/applier_check(page=1)}" th:class="${currentPage == 1} ? 'bt disabled' : 'bt'"><<</a>
+        <a th:href="@{/applier_check(page=${currentPage != 1 ? currentPage - 1 : currentPage})}" th:class="${currentPage == 1} ? 'bt disabled' : 'bt'"><</a>
+
+        <th:block th:each="pageNumber : ${#numbers.sequence(startPage, endPage)}">
+          <a th:href="@{/applier_check(page=${pageNumber})}" th:class="${pageNumber == currentPage} ? 'num on' : 'num'">
+            [[${pageNumber}]]
+          </a>
+        </th:block>
+
+        <a th:href="@{/applier_check(page=${currentPage != totalPages ? currentPage + 1 : currentPage})}" th:class="${currentPage == totalPages} ? 'bt disabled' : 'bt'">></a>
+        <a th:href="@{/applier_check(page=${totalPages})}" th:class="${currentPage == totalPages} ? 'bt disabled' : 'bt'">>></a>
+      </div>
     </div>
   </main>
 </body>

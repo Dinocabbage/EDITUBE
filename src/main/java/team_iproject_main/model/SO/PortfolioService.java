@@ -62,6 +62,11 @@ public class PortfolioService {
     }
 
 
+    // 겸손
+    public List<PortfolioDO> PoforFinder(String folio_search_text, String location, String[] edit_tools_folio) {
+
+        return portfolioDao.FolioFinder(folio_search_text, location, edit_tools_folio);
+    }
 
 }
 

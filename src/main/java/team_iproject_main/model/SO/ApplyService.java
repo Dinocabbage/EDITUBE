@@ -52,8 +52,13 @@ public class ApplyService {
 
     // 0512 준원
     // 마이페이지 -> 작성한 구인글 -> 지원자 확인
-    public List<ApplierListDO> myApplierList(int recruitNo) {
-        List<ApplierListDO> applierListDO = applyEditorDao.myRecruitApplierList(recruitNo);
-        return applierListDO;
+    // 준영 페이징 추가
+    public List<ApplierListDO> myApplierList(int recruitNo, int page, int postsPerPage) {
+        int offset = (page - 1) * postsPerPage;
+        return applyEditorDao.myRecruitApplierList(recruitNo, postsPerPage, offset);
+    }
+
+    public int getTotalApplier(int recruitNo) {
+        return applyEditorDao.getTotalApplier(recruitNo);
     }
 }

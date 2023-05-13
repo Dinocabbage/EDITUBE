@@ -148,11 +148,14 @@ public class RecruitController {
 
     }
 
+    //준영 페이징 추가
     @PostMapping("/recruit_board/search")
     public String board_Search_find_Post(@ModelAttribute("searchForm") RequestKeyword keyword, HttpSession session) {
         session.setAttribute("keyword", keyword);
         return "redirect:/recruit_board/search";
     }
+
+    //준영 페이징 추가
     @GetMapping("/recruit_board/search")
     public String board_Search_find(@RequestParam(value = "page", defaultValue = "1") int page
             , Model model, HttpSession session) {
@@ -197,15 +200,35 @@ public class RecruitController {
 
     // 0511 준원
     // 마이페이지 -> 내 구인글 확인 -> 구인글 리스트
+    // 준영 페이징 추가
     @GetMapping("/my_recruit")
-    public String myRecruit(HttpSession session, Model model) {
+    public String myRecruit(@RequestParam(value = "page", defaultValue = "1") int page, HttpSession session, Model model) {
+        int postsPerPage = 10;
+        int pageNavigationLinks = 5;
+
         String youtuber_email = String.valueOf(session.getAttribute("email"));
-        List<MyRecruitDO> myRecruitList = recruitService.myRecruitList(youtuber_email);
+        List<MyRecruitDO> myRecruitList = recruitService.myRecruitList(youtuber_email, page, postsPerPage);
         if (myRecruitList.size() == 0) {
             model.addAttribute("NotRecruit", "작성하신 구인글이 없습니다.");
         } else {
             model.addAttribute("myRecruitList", myRecruitList);
         }
+
+        int totalPosts = recruitService.getTotalRecruits(youtuber_email);
+        int totalPages = (int) Math.ceil((double) totalPosts / postsPerPage);
+        int startPage = Math.max(1, page - (pageNavigationLinks / 2));
+        int endPage = Math.min(startPage + pageNavigationLinks - 1, totalPages);
+
+        model.addAttribute("currentPage", page);
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+        model.addAttribute("totalPages", totalPages);
         return "/my_recruit";
+    }
+
+    @PostMapping("/recruit_board/main")
+    public String main_Search_find_Post(@ModelAttribute("searchForm") RequestKeyword keyword, HttpSession session) {
+        session.setAttribute("keyword", keyword);
+        return "redirect:/recruit_board/search";
     }
 }

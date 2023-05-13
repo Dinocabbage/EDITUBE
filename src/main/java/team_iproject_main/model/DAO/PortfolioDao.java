@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import team_iproject_main.model.DO.PortfolioDO;
 import team_iproject_main.model.DO.PortfolioEditDO;
+import team_iproject_main.model.Mapper.PortfolioFinderRowMapper;
 import team_iproject_main.model.Mapper.PortfolioRowMapper;
 
 import java.util.List;
@@ -73,5 +74,27 @@ public class PortfolioDao {
     //포트폴리오 삭제
     public void deletePortfolioPost(String email1) {
         jdbcTemplate.update("DELETE FROM portfolio WHERE EDITOR_EMAIL = ?", email1);
+    }
+
+    // 겸손
+    public List<PortfolioDO> FolioFinder(String folio_search_text, String location, String[] edit_tools_folio) {
+        String[] tools = edit_tools_folio;
+
+        String sql = "select distinct p.is_public, u.email, p.portfolio_title, u.nickname, p.post_date " +
+                "from portfolio p " +
+                "join user_info u on p.editor_email = u.email " +
+                "join edit_tools_list t on p.editor_email = t.editor_email " +
+                "where p.portfolio_title LIKE '%" + folio_search_text + "%' " +
+                "and p.workable_location LIKE '%" + location + "%' ";
+        if(edit_tools_folio.length !=0) {
+            sql += "and t.edit_tool IN (";
+            for(String tool : tools) {
+                sql += "'" + tool + "',";
+            }
+            sql = sql.substring(0, sql.length() -1);
+            sql += ")";
+        }
+
+        return jdbcTemplate.query(sql, new PortfolioFinderRowMapper());
     }
 }

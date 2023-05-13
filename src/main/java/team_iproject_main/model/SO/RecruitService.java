@@ -67,8 +67,15 @@ public class RecruitService {
     }
 
     //주현
-    public List<RecruitDO> findRecruit(String email) {
-        return recruitBoardDao.findAllApplyByEmail(email);
+    // 준영 페이징 추가
+    public List<RecruitDO> findRecruit(String email, int page, int postsPerPage) {
+        int offset = (page - 1) * postsPerPage;
+        return recruitBoardDao.findAllApplyByEmail(email, postsPerPage, offset);
+    }
+
+    // 준영 페이징 추가
+    public int getTotalApply(String email) {
+        return recruitBoardDao.getTotalApply(email);
     }
 
     //희수
@@ -76,7 +83,6 @@ public class RecruitService {
     public RecruitDO boardview(int recruitNo){
         return recruitBoardDao.selectRecruitPost(recruitNo);
     }
-
 
     public List<ChannelCategoryDO> getChannelCategory(int recruitNo){
         return recruitBoardDao.getCategories(recruitNo);
@@ -120,8 +126,15 @@ public class RecruitService {
 
     // 0512 준원
     // 유튜버 -> 작성한 구인글 -> 지원자 확인
-    public List<MyRecruitDO> myRecruitList(String youtuber_email) {
-        return recruitBoardDao.findMyRecruit(youtuber_email);
+    // 준영 페이징 추가
+    public List<MyRecruitDO> myRecruitList(String youtuber_email, int page, int postsPerPage) {
+        int offset = (page - 1) * postsPerPage;
+        return recruitBoardDao.findMyRecruit(youtuber_email, postsPerPage, offset);
+    }
+
+    // 준영 페이징 추가
+    public int getTotalRecruits(String youtuber_email) {
+        return recruitBoardDao.getTotalRecruits(youtuber_email);
     }
 
 }

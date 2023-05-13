@@ -74,8 +74,19 @@
           </table>
         </div>
 
+        <div class="paging">
+          <a th:href="@{/applynow(page=1)}" th:class="${currentPage == 1} ? 'bt disabled' : 'bt'"><<</a>
+          <a th:href="@{/applynow(page=${currentPage != 1 ? currentPage - 1 : currentPage})}" th:class="${currentPage == 1} ? 'bt disabled' : 'bt'"><</a>
 
-        <!-- 게시물 추가 -->
+          <th:block th:each="pageNumber : ${#numbers.sequence(startPage, endPage)}">
+            <a th:href="@{/applynow(page=${pageNumber})}" th:class="${pageNumber == currentPage} ? 'num on' : 'num'">
+              [[${pageNumber}]]
+            </a>
+          </th:block>
+
+          <a th:href="@{/applynow(page=${currentPage != totalPages ? currentPage + 1 : currentPage})}" th:class="${currentPage == totalPages} ? 'bt disabled' : 'bt'">></a>
+          <a th:href="@{/applynow(page=${totalPages})}" th:class="${currentPage == totalPages} ? 'bt disabled' : 'bt'">>></a>
+        </div>
       </div>
     </div>
   </main>

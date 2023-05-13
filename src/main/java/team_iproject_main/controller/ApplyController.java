@@ -49,9 +49,12 @@ public class ApplyController {
     }
 
     @GetMapping("applynow")
-    public String applynowForm(Model model, HttpSession session){
+    public String applynowForm(@RequestParam(value = "page", defaultValue = "1") int page, Model model, HttpSession session){
+        int postsPerPage = 10;
+        int pageNavigationLinks = 5;
+
         String email = session.getAttribute("email").toString();
-        List<RecruitDO> recruitDO = recruitService.findRecruit(email);
+        List<RecruitDO> recruitDO = recruitService.findRecruit(email, page, postsPerPage);
 
         for(RecruitDO redo : recruitDO){
             if(redo.getDeadline().compareTo(LocalDate.now()) < 0){
@@ -61,6 +64,17 @@ public class ApplyController {
             }
         }
         model.addAttribute("recruitDO", recruitDO);
+
+        int totalPosts = recruitService.getTotalApply(email);
+        int totalPages = (int) Math.ceil((double) totalPosts / postsPerPage);
+        int startPage = Math.max(1, page - (pageNavigationLinks / 2));
+        int endPage = Math.min(startPage + pageNavigationLinks - 1, totalPages);
+
+        model.addAttribute("currentPage", page);
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+        model.addAttribute("totalPages", totalPages);
+
         return "applynow";
     }
 
@@ -109,17 +123,27 @@ public class ApplyController {
     // 0512 준원
     // 유튜버 -> 작성한 구인글 -> 지원자 확인
     @GetMapping("/applier_check")
-    public String bringMyRecruitApplier(int recruitNo, Model model) {
+    public String bringMyRecruitApplier(@RequestParam(value = "page", defaultValue = "1") int page, int recruitNo, Model model) {
+        int postsPerPage = 10;
+        int pageNavigationLinks = 5;
 
-        RecruitDO recruitDO = recruitService.boardview(recruitNo);
-        model.addAttribute("recruitDO",recruitDO);
-        List<ApplierListDO> applierListDO = applyService.myApplierList(recruitNo);
+        List<ApplierListDO> applierListDO = applyService.myApplierList(recruitNo, page, postsPerPage);
 
         if (applierListDO.size() == 0) {
             model.addAttribute("NotApply", "해당 구인글에 지원자가 없습니다.");
         } else {
             model.addAttribute("applierListDO", applierListDO);
         }
+
+        int totalPosts = applyService.getTotalApplier(recruitNo);
+        int totalPages = (int) Math.ceil((double) totalPosts / postsPerPage);
+        int startPage = Math.max(1, page - (pageNavigationLinks / 2));
+        int endPage = Math.min(startPage + pageNavigationLinks - 1, totalPages);
+
+        model.addAttribute("currentPage", page);
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+        model.addAttribute("totalPages", totalPages);
 
         return "applier_check";
     }

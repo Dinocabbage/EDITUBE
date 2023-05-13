@@ -22,10 +22,12 @@
 
 <th:block layout:fragment="content">
 	<body>
-	<div class="search-container">
-		<input type="text" class="search-input" placeholder="구인글 검색">
-		<button class="search-button">검색</button>
-	</div>
+	<form th:action="@{/recruit_board/main}" method="POST" modelAttribute="searchForm">
+		<div class="search-container">
+			<input type="text" class="search-input" id="search_text" name="search_text" placeholder="구인글 검색">
+			<button type="submit" class="search-button">검색</button>
+		</div>
+	</form>
 
 
 	<div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
