@@ -33,7 +33,7 @@ hr {
 .main {
     float: left;
     width: 50%;
-    height: 100vh;
+    height: auto;
     padding: 5px;
 
 }
@@ -106,7 +106,9 @@ thead {
 }
 
 .btn:hover {
-    background-color: #0069d9;
+    background-color: #ffffff;
+        color: #256BF4;
+        border: 2px solid #256BF4;
 }
 
 
@@ -170,4 +172,9 @@ thead {
 a {
     text-decoration: none;
     color: inherit;
+}
+
+.root{
+display: flex;
+justify-content: space-evenly;
 }

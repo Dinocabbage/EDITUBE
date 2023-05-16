@@ -48,7 +48,14 @@ public class RecruitController {
 
     //주현 0512:수업시간중에 수정
     @GetMapping("/recruit_result")
-    public String recruitresult(int recruitNo, Model model) {
+    public String recruitresult(int recruitNo, Model model, HttpSession session, RedirectAttributes redirectAttributes) {
+        if(session.getAttribute("email") == null) {
+            redirectAttributes.addFlashAttribute("notLogin","로그인 후 이용 가능합니다.");
+            return "redirect:/login";
+        }
+
+        YoutuberDO infoDO = recruitService.getYoutuberPhotoName(recruitNo);
+
         RecruitDO recruitDO = recruitService.boardview(recruitNo);
         List<ChannelCategoryDO> chCategories = recruitService.getChannelCategory(recruitNo);
         List<EditToolsRecruitDO> editTools = recruitService.getEditTools(recruitNo);
@@ -68,6 +75,7 @@ public class RecruitController {
             recruitDO.setOverdate(true);
         }
 
+        model.addAttribute("infoDO", infoDO);
         model.addAttribute("recruitDO", recruitDO);
         model.addAttribute("categories", categories);
         model.addAttribute("tools", tools);
@@ -75,7 +83,16 @@ public class RecruitController {
     }
 
     @GetMapping("/recruit_board_edit")
-    public String recruit_board_editForm() {
+    public String recruit_board_editForm(HttpSession session, RedirectAttributes redirectAttributes) {
+        if(session.getAttribute("email") == null) {
+            redirectAttributes.addFlashAttribute("notLogin","로그인 후 이용 가능합니다.");
+            return "redirect:/login";
+        }
+        else if(!String.valueOf(session.getAttribute("type")).equals("유튜버")) {
+            redirectAttributes.addFlashAttribute("notAvailable","유튜버만 이용할 수 있습니다.");
+            return "redirect:/main";
+        }
+
         return "recruit_board_edit";
     }
 
@@ -83,26 +100,60 @@ public class RecruitController {
     public String recruit_board_edit(RecruitBoardEditRequest req, HttpSession session, Model model) {
         String email = session.getAttribute("email").toString();
 
-        try{
-            recruitService.recruit_boardWrite(email, req);
-        }catch(Exception e){
-            model.addAttribute("errormsg", "유튜브 동영상 링크가 아닙니다.\n반드시 유튜브 동영상 링크를 넣어주세요");
-            return "/recruit_board_edit";
-        }
+        recruitService.recruit_boardWrite(email, req);
+
         return "redirect:/recruit_board";
     }
 
     //희수
     //구인글 삭제
     @GetMapping("/recruit_delete")
-    public String recruit_delete(int recruitNo, RedirectAttributes redirectAttributes) {
-        redirectAttributes.addFlashAttribute("msg","정상적으로 삭제 완료 되었습니다.");
+    public String recruit_delete(int recruitNo, RedirectAttributes redirectAttributes, HttpSession session) {
+        if(session.getAttribute("email") == null) {
+            redirectAttributes.addFlashAttribute("notLogin","로그인 후 이용 가능합니다.");
+            return "redirect:/login";
+        }
+        else if(!String.valueOf(session.getAttribute("email")).equals(recruitService.boardview(recruitNo).getEmail()) &&
+                !String.valueOf(session.getAttribute("type")).equals("관리자")) {
+            redirectAttributes.addFlashAttribute("notAvailable", "작성자만 삭제할 수 있습니다.");
+            return "redirect:/main";
+        }
+
         recruitService.deleteRecruit(recruitNo);
+        redirectAttributes.addFlashAttribute("msg","정상적으로 삭제 완료 되었습니다.");
+
         return "redirect:/recruit_board";
     }
 
+    //주현 0513
+    @GetMapping("/recruit_delete_myPage")
+    public String recruit_delete_myPage(int recruitNo, RedirectAttributes redirectAttributes, HttpSession session) {
+        if(session.getAttribute("email") == null) {
+            redirectAttributes.addFlashAttribute("notLogin","로그인 후 이용 가능합니다.");
+            return "redirect:/login";
+        }
+        else if(!String.valueOf(session.getAttribute("email")).equals(recruitService.boardview(recruitNo).getEmail())) {
+            redirectAttributes.addFlashAttribute("notAvailable", "작성자만 삭제할 수 있습니다.");
+            return "redirect:/main";
+        }
+
+        redirectAttributes.addAttribute("msg","정상적으로 삭제 완료 되었습니다.");
+        recruitService.deleteRecruit(recruitNo);
+        return "redirect:/my_recruit";
+    }
+
+
     @GetMapping("/recruit_board_modify")
-    public String recruit_modifyForm(int recruitNo, Model model){
+    public String recruit_modifyForm(int recruitNo, Model model, HttpSession session, RedirectAttributes redirectAttributes){
+        if(session.getAttribute("email") == null) {
+            redirectAttributes.addFlashAttribute("notLogin","로그인 후 이용 가능합니다.");
+            return "redirect:/login";
+        }
+        else if(!String.valueOf(session.getAttribute("email")).equals(recruitService.boardview(recruitNo).getEmail())) {
+            redirectAttributes.addFlashAttribute("notAvailable", "작성자만 수정할 수 있습니다.");
+            return "redirect:/main";
+        }
+
         RecruitDO recruitDO = recruitService.boardview(recruitNo);
         List<ChannelCategoryDO> chCategories = recruitService.getChannelCategory(recruitNo);
         List<EditToolsRecruitDO> editTools = recruitService.getEditTools(recruitNo);
@@ -135,14 +186,10 @@ public class RecruitController {
     }
 
     @PostMapping("/recruit_board_modify")
-    public String recruit_board_modify(@RequestParam(value = "recruitNo") int recruitNo, RecruitBoardEditRequest req, HttpSession session, Model model, RedirectAttributes redirectAttributes){
+    public String recruit_board_modify(@RequestParam(value = "recruitNo") int recruitNo, RecruitBoardEditRequest req, HttpSession session, RedirectAttributes redirectAttributes){
         String email = session.getAttribute("email").toString();
 
-        boolean br = recruitService.recruit_boardModify(req, recruitNo, email);
-        if(!br) {
-            redirectAttributes.addFlashAttribute("errormsg", "유튜브 동영상 링크가 아닙니다.\n반드시 유튜브 동영상 링크를 넣어주세요");
-            return "redirect:/recruit_board_modify?recruitNo=" + recruitNo;
-        }
+        recruitService.recruit_boardModify(req, recruitNo, email);
         redirectAttributes.addFlashAttribute("msg", "정상적으로 수정되었습니다!");
         return "redirect:/recruit_board";
 
@@ -202,7 +249,16 @@ public class RecruitController {
     // 마이페이지 -> 내 구인글 확인 -> 구인글 리스트
     // 준영 페이징 추가
     @GetMapping("/my_recruit")
-    public String myRecruit(@RequestParam(value = "page", defaultValue = "1") int page, HttpSession session, Model model) {
+    public String myRecruit(@RequestParam(value = "page", defaultValue = "1") int page, HttpSession session, Model model, RedirectAttributes redirectAttributes) {
+        if(session.getAttribute("email") == null) {
+            redirectAttributes.addFlashAttribute("notLogin","로그인 후 이용 가능합니다.");
+            return "redirect:/login";
+        }
+        else if(!String.valueOf(session.getAttribute("type")).equals("유튜버")) {
+            redirectAttributes.addFlashAttribute("notAvailable","유튜버만 이용할 수 있습니다.");
+            return "redirect:/main";
+        }
+
         int postsPerPage = 10;
         int pageNavigationLinks = 5;
 

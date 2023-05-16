@@ -16,6 +16,7 @@ public class RecruitListRowMapper implements RowMapper<RecruitSearchDO> {
         recruitSearchDO.setTitle(rs.getString("RECRUIT_TITLE"));
         recruitSearchDO.setDeadline(rs.getDate("DEADLINE").toLocalDate());
         recruitSearchDO.setChannel_name(rs.getString("channel_name"));
+        recruitSearchDO.setChannel_photo(rs.getString("channel_photo"));
 
         return recruitSearchDO;
     }

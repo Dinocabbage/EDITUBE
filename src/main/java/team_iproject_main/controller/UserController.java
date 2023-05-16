@@ -4,17 +4,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import team_iproject_main.exception.*;
-import team_iproject_main.model.DO.*;
+import team_iproject_main.model.DO.EmailDto;
+import team_iproject_main.model.DO.UserDO;
 import team_iproject_main.model.Request.*;
 import team_iproject_main.model.SO.UserService;
 
 import javax.servlet.http.HttpSession;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 @Controller
@@ -32,6 +31,11 @@ public class UserController {
     @GetMapping("/main")
     public String home() {
         return "main";
+    }
+
+    @GetMapping("/")
+    public String home2() {
+        return "redirect:/main";
     }
 
     //0508손주현
@@ -70,12 +74,22 @@ public class UserController {
             model.addAttribute("msg", "이미 존재하는 닉네임입니다.");
             view = "/signup_editor";
         }
+        catch (DuplicatePhone_numberException e) {
+            model.addAttribute("msg", "이미 존재하는 번호입니다.");
+            view = "/signup_editor";
+        }
+        catch (UnsupportedEncodingException e) {
+        }
         return view;
 
     }
 
     @GetMapping("/signup_youtuber")
-    public String signup_youtuberForm(Model model) {
+    public String signup_youtuberForm(Model model, HttpSession session) {
+        model.addAttribute("channel_certificate_button", false);
+        model.addAttribute("channel_photo_subscribe",true);
+        model.addAttribute("channel_errorMsg_hidden", true);
+
         return "signup_youtuber";
     }
 
@@ -84,24 +98,47 @@ public class UserController {
     public String signup_youtuber(RegisterRequest req, Model model) {
         String view = "";
         if(req.getChannel_id() == null) {
-            model.addAttribute("resultMsg", "채널 인증이 되지 않아 가입을 진행할 수 없습니다.");
-
+            model.addAttribute("channel_errorMsg", "채널 인증이 되지 않아 가입을 진행할 수 없습니다.");
+            model.addAttribute("channel_certificate_button", false);
+            model.addAttribute("channel_photo_subscribe",true);
+            model.addAttribute("channel_errorMsg_hidden", false);
             return "signup_youtuber";
         }
         try {
             userService.youtuber_signUp(req);
             model.addAttribute("msg", "회원가입 되었습니다.");
             view = "/main";
+
         } catch (DuplicateEmailException e) {
             model.addAttribute("msg", "이미 등록된 이메일입니다.");
+            model.addAttribute("channel_certificate_button", false);
+            model.addAttribute("channel_photo_subscribe",true);
+            model.addAttribute("channel_errorMsg_hidden", false);
+            model.addAttribute("channel_errorMsg", "채널 인증이 되지 않아 가입을 진행할 수 없습니다.");
             view = "/signup_youtuber";
         }
         catch (DuplicateNickNameException e) {
             model.addAttribute("msg", "이미 존재하는 닉네임입니다.");
+            model.addAttribute("channel_certificate_button", false);
+            model.addAttribute("channel_photo_subscribe",true);
+            model.addAttribute("channel_errorMsg_hidden", false);
+            model.addAttribute("channel_errorMsg", "채널 인증이 되지 않아 가입을 진행할 수 없습니다.");
             view = "/signup_youtuber";
         }
         catch (DuplicateChannelException e) {
             model.addAttribute("msg", "채널아이디가 중복입니다.");
+            model.addAttribute("channel_certificate_button", false);
+            model.addAttribute("channel_photo_subscribe",true);
+            model.addAttribute("channel_errorMsg_hidden", false);
+            model.addAttribute("channel_errorMsg", "채널 인증이 되지 않아 가입을 진행할 수 없습니다.");
+            view = "/signup_youtuber";
+        }
+        catch (DuplicatePhone_numberException e) {
+            model.addAttribute("msg", "이미 존재하는 번호입니다.");
+            model.addAttribute("channel_certificate_button", false);
+            model.addAttribute("channel_photo_subscribe",true);
+            model.addAttribute("channel_errorMsg_hidden", false);
+            model.addAttribute("channel_errorMsg", "채널 인증이 되지 않아 가입을 진행할 수 없습니다.");
             view = "/signup_youtuber";
         }
         return view;
@@ -120,13 +157,14 @@ public class UserController {
 
         if(login.getEmail().equals(adminEmail) && login.getPassword().equals(adminPassword)) {
             session.setAttribute("email", login.getEmail());
-            session.setAttribute("type" , "관리자");
+            session.setAttribute("type", "관리자");
             session.setAttribute("nickname", "관리자");
             return "redirect:/main";
         }
 
         try{
             if(userService.checkLoginAuth(login)){
+
                 UserDO users = userService.findUser(login.getEmail());
                 login.setEmail(users.getEmail());
                 login.setPassword("");
@@ -140,6 +178,7 @@ public class UserController {
             model.addAttribute("error", "등록되지 않은 아이디입니다.");
             view = "/login";
         }
+
         catch(WrongPasswordException e){
             model.addAttribute("error", "비밀번호를 잘못 입력했습니다. \n입력하신 내용을 다시 확인해주세요.");
             view = "/login";
@@ -217,7 +256,12 @@ public class UserController {
 
     //5.8 양서림
     @GetMapping("/myPage")
-    public String myPageForm(HttpSession session,Model model) {
+    public String myPageForm(HttpSession session,Model model, RedirectAttributes redirectAttributes) {
+        if(session.getAttribute("email") == null) {
+            redirectAttributes.addFlashAttribute("notLogin","로그인 후 이용 가능합니다.");
+            return "redirect:/login";
+        }
+
         String email = String.valueOf(session.getAttribute("email"));
         UserDO user = userService.findById(email); // 기존설정한 아이디와 일치하는 자료 db에서 가져옴
         model.addAttribute("user", user); //모델에 저장후 html에서 표시
@@ -230,19 +274,32 @@ public class UserController {
     public String myPageEdit(@ModelAttribute("member") UserUpdateRequest userUpdateRequest, Model model, HttpSession session, RedirectAttributes redirectAttributes){
         String email = String.valueOf(session.getAttribute("email"));
         UserDO check = userService.findNickname(userUpdateRequest.getNickname());
+        UserDO numCheck = userService.findByPhoneNumber(userUpdateRequest.getPhone_number());
 
         if(check != null && !userUpdateRequest.getNickname().equals(String.valueOf(session.getAttribute("nickname")))){
             redirectAttributes.addFlashAttribute("duplicateNickname","이미 존재하는 닉네임 입니다.");
             return "redirect:/myPage";
         }
 
+        if(numCheck != null && !userUpdateRequest.getPhone_number().equals(userService.findById(String.valueOf(session.getAttribute("email"))).getPhone_number())) {
+            redirectAttributes.addFlashAttribute("duplicatePhoneNumber", "이미 존재하는 번호입니다.");
+            return "redirect:/myPage";
+        }
+
+
         userService.mypageupdate(userUpdateRequest, email); // 사용자가 입력한값 데베에 업데이트
+        redirectAttributes.addFlashAttribute("msg", "회원 정보가 수정되었습니다.");
         session.setAttribute("nickname", userUpdateRequest.getNickname());
         return "redirect:/myPage";
     }
 
     @GetMapping("/changepwd")
-    public String ChangepwdForm(Model model) {
+    public String ChangepwdForm(Model model, RedirectAttributes redirectAttributes, HttpSession session) {
+        if(session.getAttribute("email") == null) {
+            redirectAttributes.addFlashAttribute("notLogin","로그인 후 이용 가능합니다.");
+            return "redirect:/login";
+        }
+
         return "changepwd";
     }
 
@@ -252,7 +309,8 @@ public class UserController {
         String email = String.valueOf(session.getAttribute("email"));
         UserDO userDO = userService.findUser(email);
 
-        if(!current.equals(userDO.getPassword())){
+
+        if(!userDO.checkPassword(current)){
             model.addAttribute("failMsg","현재 비밀번호를 잘못입력하셨습니다. 비밀번호를 확인해주세요.");
             return "changepwd";
         }
@@ -262,36 +320,50 @@ public class UserController {
             return "redirect:/myPage";
         }
     }
-
-    //0511- 손주현
-    @GetMapping("/disableAccount")
-    public String disalbeAccountForm(Model model) {
-        return "disableAccount";
-    }
-
     //0511- 손주현
     @PostMapping("/disableAccount")
     public String disalbeAccount(@RequestParam(value = "password") String password,
-                                 HttpSession session, Model model){
+                                 HttpSession session, Model model) {
         String email = String.valueOf(session.getAttribute("email"));
         UserDO userDO = userService.findUser(email);
 
-        if(!password.equals(userDO.getPassword())){
-            model.addAttribute("errorMsg","비밀번호를 잘못 입력하셨습니다. 비밀번호를 확인해주세요.");
+        if (!userDO.checkPassword(password)) {
+            model.addAttribute("errorMsg", "비밀번호를 잘못 입력하셨습니다. 비밀번호를 확인해주세요.");
             return "disableAccount";
         }
 
         userService.deleteUser(email);
-        model.addAttribute("msg","회원탈퇴 처리 되었습니다.");
+        model.addAttribute("msg", "회원탈퇴 처리 되었습니다.");
         session.removeAttribute("email");
         session.invalidate();
         return "/main";
     }
 
+
+    //0511- 손주현
+    @GetMapping("/disableAccount")
+    public String disalbeAccountForm(Model model, HttpSession session, RedirectAttributes redirectAttributes) {
+        if(session.getAttribute("email") == null) {
+            redirectAttributes.addFlashAttribute("notLogin","로그인 후 이용 가능합니다.");
+            return "redirect:/login";
+        }
+
+        return "disableAccount";
+    }
+
     //희수
     //관리자 (회원 조회)
     @GetMapping("/memberManage")
-    public String list(@RequestParam(value = "page", defaultValue = "1") int page, Model model) {
+    public String list(@RequestParam(value = "page", defaultValue = "1") int page, Model model, HttpSession session, RedirectAttributes redirectAttributes) {
+        if(session.getAttribute("email") == null) {
+            redirectAttributes.addFlashAttribute("notLogin","로그인 후 이용 가능합니다.");
+            return "redirect:/login";
+        }
+        else if(!String.valueOf(session.getAttribute("type")).equals("관리자")) {
+            redirectAttributes.addFlashAttribute("notAvailable","관리자만 이용할 수 있습니다.");
+            return "redirect:/main";
+        }
+
         int postsPerPage = 10;
         int pageNavigationLinks = 5;
 
@@ -314,9 +386,9 @@ public class UserController {
     //id(이메일),닉네임 조회
     @PostMapping("/memberManage/search")
     public String findidPost(@RequestParam(value = "page", defaultValue = "1") int page, HttpSession session,
-                         @ModelAttribute("userSearchRequest") UserSearchRequest userSearchRequest, Model model) {
+                             @ModelAttribute("userSearchRequest") UserSearchRequest userSearchRequest, Model model, RedirectAttributes redirectAttributes) {
         if(userSearchRequest.getSearchtext().equals("")) {
-            return list(1, model);
+            return list(1, model, session, redirectAttributes);
         }
 
         session.setAttribute("userSearchRequest", userSearchRequest);
@@ -325,7 +397,16 @@ public class UserController {
 
     @GetMapping("/memberManage/search")
     public String findid(@RequestParam(value = "page", defaultValue = "1") int page
-            , Model model, HttpSession session) {
+            , Model model, HttpSession session, RedirectAttributes redirectAttributes) {
+        if(session.getAttribute("email") == null) {
+            redirectAttributes.addFlashAttribute("notLogin","로그인 후 이용 가능합니다.");
+            return "redirect:/login";
+        }
+        else if(!String.valueOf(session.getAttribute("type")).equals("관리자")) {
+            redirectAttributes.addFlashAttribute("notAvailable","관리자만 이용할 수 있습니다.");
+            return "redirect:/main";
+        }
+
         UserSearchRequest userSearchRequest = (UserSearchRequest)session.getAttribute("userSearchRequest");
 
         int postsPerPage = 10;
@@ -353,5 +434,46 @@ public class UserController {
     public String delectId(@RequestParam(value = "delete") String email, Model model) {
         userService.deleteMember(email);
         return "memberManage";
+    }
+
+
+    @ResponseBody
+    @RequestMapping(value = "/ConfirmEmail", method = RequestMethod.POST)
+    public String compareValues(@RequestBody EmailDto emailDto) {
+        String newValue = "true";
+        String email = emailDto.getValue();
+        System.out.println(email);
+
+        if(userService.ConfirmEmail(email)) {
+            return newValue;
+        }
+        newValue = "false";
+        return newValue;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/ConfirmNickname", method = RequestMethod.POST)
+    public String ConFirmNickname1(@RequestBody EmailDto emailDto) {
+        String newValue = "true";
+        String nickname = emailDto.getNickname();
+
+        if(userService.ConfirmNickname(nickname)) {
+            return newValue;
+        }
+        newValue = "false";
+        return newValue;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/ConfirmPhoneNumber", method = RequestMethod.POST)
+    public String ConFirmPhoneNumber1(@RequestBody EmailDto emailDto) {
+        String newValue = "true";
+        String phone_number = emailDto.getPhone_number();
+
+        if(userService.ConfirmPhoneNumber(phone_number)) {
+            return newValue;
+        }
+        newValue = "false";
+        return newValue;
     }
 }

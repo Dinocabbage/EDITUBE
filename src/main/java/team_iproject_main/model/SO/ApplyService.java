@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import team_iproject_main.model.DAO.ApplyEditorDao;
 import team_iproject_main.model.DO.ApplierListDO;
 import team_iproject_main.model.DO.ApplyEditorDO;
+import team_iproject_main.model.DO.UserEditorDO;
 
 import java.util.List;
 
@@ -14,21 +15,30 @@ public class ApplyService {
     @Autowired
     private ApplyEditorDao applyEditorDao;
 
-    public void applyUploadVideo(int recruitNo, String editor_email, String edited_link, String editor_memo) throws Exception {
+    public void applyUploadVideo(int recruitNo, String editor_email, String edited_link, String editor_memo) {
         //https://www.youtube.com/watch?v=sEenDC5fry4
         //https://youtu.be/sEenDC5fry4
-        //링크가 두 종류임...
+        //https://www.youtube.com/live/pY5yHv-ZOi4?feature=share
+        //https://www.youtube.com/watch?v=pY5yHv-ZOi4&pp=ygUQ7Lmo7LCp66eoIOybkOuztQ%3D%3D
+        //링크가 두 종류임... -> 4종류 됨..........................
         String returnurl = "";
         if(edited_link.contains("https://www.youtube.com/watch?v=")){
-            returnurl = "https://www.youtube.com/embed/" + edited_link.substring(32);
+            if(edited_link.contains(("&pp="))){
+                returnurl = "https://www.youtube.com/embed/" + edited_link.substring(32, 43);
+            }else{
+                returnurl = "https://www.youtube.com/embed/" + edited_link.substring(32, 43);
+            }
         }
         else if(edited_link.contains("https://youtu.be/")){
-            returnurl = "https://www.youtube.com/embed/" + edited_link.substring(17);
+            returnurl = "https://www.youtube.com/embed/" + edited_link.substring(17, 28);
         }
-        else {
-            throw new Exception();
+        else if(edited_link.contains("https://www.youtube.com/live/")){
+            returnurl = "https://www.youtube.com/embed/" + edited_link.substring(29, 40);
+        }else{
+            returnurl = edited_link;
         }
-        applyEditorDao.updateApplyEditor(recruitNo, editor_email, edited_link, editor_memo);
+        applyEditorDao.updateApplyEditor(recruitNo, editor_email, returnurl, editor_memo);
+
     }
 
     public ApplyEditorDO getLinkAndMemo(int recruitNo, String email){
@@ -60,5 +70,21 @@ public class ApplyService {
 
     public int getTotalApplier(int recruitNo) {
         return applyEditorDao.getTotalApplier(recruitNo);
+    }
+
+    public UserEditorDO findEditor(String email){
+        return applyEditorDao.findEditor(email);
+    }
+
+    // 0514 준원
+    // 테스트 영상확인
+    public ApplyEditorDO applierTestVideo(String editor_email, int recruit_no) {
+        return applyEditorDao.checkApplierVideo(editor_email, recruit_no);
+    }
+
+    // 0514 준원
+    // 유튜버 메모
+    public void insertYoutuberMemo(String youtuber_memo, int apply_no) {
+        applyEditorDao.updateYoutuberMemo(youtuber_memo, apply_no);
     }
 }

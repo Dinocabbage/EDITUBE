@@ -19,4 +19,5 @@ public class RegisterRequest {
     private Long video_count;
     private Long view_count;
     private String channel_name;
+    private String channel_photo;
 }

@@ -27,7 +27,7 @@ public class RecruitSearchDO { //구인글 (유튜버)
     private String original_link;
     private LocalDateTime postdate;
     private String channel_name;
-
+    private String channel_photo;
 
     @Override
     public String toString() {

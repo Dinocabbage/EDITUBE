@@ -17,6 +17,7 @@ public class YoutuberRowMapper implements RowMapper<RegisterReqeustChannel> {
         uq.setVideo_count(rs.getLong("video_count"));
         uq.setView_count(rs.getLong("view_count"));
         uq.setChannel_name(rs.getString("channel_name"));
+        uq.setChannel_photo(rs.getString("channel_photo"));
 
         return uq;
     }

@@ -16,10 +16,11 @@ public class PortfolioRowMapper implements RowMapper<PortfolioDO> {
         portfolioDO.setIspublic(rs.getString("IS_PUBLIC"));
         portfolioDO.setWorkable_location(rs.getString("WORKABLE_LOCATION"));
         portfolioDO.setOthercareer(rs.getString("OTHER_CAREER"));
+        portfolioDO.setYOUTUBE_CAREER(rs.getString("YOUTUBE_CAREER"));
         portfolioDO.setMessage(rs.getString("MESSAGE"));
         portfolioDO.setPortfolio_title(rs.getString("PORTFOLIO_TITLE"));
         portfolioDO.setPost_date(rs.getDate("POST_DATE").toLocalDate());
-        portfolioDO.setDesiredsalary(rs.getInt("DESIRED_SALARY"));
+        portfolioDO.setDesiredsalary(rs.getString("DESIRED_SALARY"));
         portfolioDO.setDesiredworktype(rs.getString("DESIRED_WORK_TYPE"));
         portfolioDO.setMessagetoyoutuber(rs.getString("MESSAGE_TO_YOUTUBER"));
         return portfolioDO;

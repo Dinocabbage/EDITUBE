@@ -58,17 +58,19 @@
         </table>
       </div>
       <div class="paging">
-        <a th:href="@{/memberManage(page=1)}" th:class="${currentPage == 1} ? 'bt disabled' : 'bt'"><<</a>
-        <a th:href="@{/memberManage(page=${currentPage != 1 ? currentPage - 1 : currentPage})}" th:class="${currentPage == 1} ? 'bt disabled' : 'bt'"><</a>
+        <th:block th:if="${totalPages > 0}">
+          <a th:href="@{/memberManage/Search(page=1)}" th:class="${currentPage == 1} ? 'bt disabled' : 'bt'"><<</a>
+          <a th:href="@{/memberManage/Search(page=${currentPage != 1 ? currentPage - 1 : currentPage})}" th:class="${currentPage == 1} ? 'bt disabled' : 'bt'"><</a>
 
-        <th:block th:each="pageNumber : ${#numbers.sequence(startPage, endPage)}">
-          <a th:href="@{/memberManage(page=${pageNumber})}" th:class="${pageNumber == currentPage} ? 'num on' : 'num'">
-            [[${pageNumber}]]
-          </a>
+          <th:block th:each="pageNumber : ${#numbers.sequence(startPage, endPage)}">
+            <a th:href="@{/memberManage/Search(page=${pageNumber})}" th:class="${pageNumber==currentPage}?'num on':'num'">
+              [[${pageNumber}]]
+            </a>
+          </th:block>
+
+          <a th:href="@{/memberManage/Search(page=${currentPage != totalPages ? currentPage + 1 : currentPage})}" th:class="${currentPage == totalPages} ? 'bt disabled' : 'bt'">></a>
+          <a th:href="@{/memberManage/Search(page=${totalPages})}" th:class="${currentPage == totalPages} ? 'bt disabled' : 'bt'">>></a>
         </th:block>
-
-        <a th:href="@{/memberManage(page=${currentPage != totalPages ? currentPage + 1 : currentPage})}" th:class="${currentPage == totalPages} ? 'bt disabled' : 'bt'">></a>
-        <a th:href="@{/memberManage(page=${totalPages})}" th:class="${currentPage == totalPages} ? 'bt disabled' : 'bt'">>></a>
       </div>
       </div>
   </main>

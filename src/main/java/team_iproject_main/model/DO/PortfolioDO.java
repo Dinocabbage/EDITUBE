@@ -16,11 +16,12 @@ public class PortfolioDO {
     private String nickname;
     private String ispublic;
     private String workable_location;
+    private String YOUTUBE_CAREER;
     private String othercareer; //경력
     private String message; //할말
     private String portfolio_title;   //제목
     private LocalDate post_date;
-    private int desiredsalary;
+    private String desiredsalary;
     private String desiredworktype;
     private String messagetoyoutuber;
 

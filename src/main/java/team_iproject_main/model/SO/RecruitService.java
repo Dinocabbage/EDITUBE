@@ -16,54 +16,69 @@ public class RecruitService {
     @Autowired
     private RecruitBoardDao recruitBoardDao;
 
-    //주현 0512 수업시간중에 수정
-    public void recruit_boardWrite(String email, RecruitBoardEditRequest req) throws Exception {
+
+    public void recruit_boardWrite(String email, RecruitBoardEditRequest req){
         //https://www.youtube.com/watch?v=sEenDC5fry4
         //https://youtu.be/sEenDC5fry4
         //링크가 두 종류임...
         String url = req.getOriginal_link();
         String returnurl = "";
         if(url.contains("https://www.youtube.com/watch?v=")){
-            returnurl = "https://www.youtube.com/embed/" + req.getOriginal_link().substring(32);
+            if(url.contains(("&pp="))){
+                returnurl = "https://www.youtube.com/embed/" + url.substring(32, 43);
+            }else{
+                returnurl = "https://www.youtube.com/embed/" + url.substring(32, 43);
+            }
         }
         else if(url.contains("https://youtu.be/")){
-            returnurl = "https://www.youtube.com/embed/" + req.getOriginal_link().substring(17);
+            returnurl = "https://www.youtube.com/embed/" + url.substring(17, 28);
         }
-        else {
-            throw new Exception();
+        else if(url.contains("https://www.youtube.com/live/")){
+            returnurl = "https://www.youtube.com/embed/" + url.substring(29, 40);
         }
+        else{
+            returnurl = url;
+        }
+
         RecruitBoardDO recruitBoardDO = new RecruitBoardDO(req.getRecruit_title(), req.getDuty(), req.getWorkload(), req.getRequirement(),
                 req.getSalary_detail(), req.getPreference(), req.getEdit_tools(), req.getEnvironment(), req.getWelfare(), req.getRecruit_detail(),
                 req.getSalary(), LocalDate.parse(req.getDeadline()), returnurl, req.getChannel_categories());
 
         recruitBoardDO.setYoutuber_email(email);
         recruitBoardDao.createRecruitBoard(recruitBoardDO);
-
     }
 
-    public boolean recruit_boardModify(RecruitBoardEditRequest req, int recruitNo, String email)  {
+    public void recruit_boardModify(RecruitBoardEditRequest req, int recruitNo, String email)  {
         String url = req.getOriginal_link();
         String returnurl = "";
+        //https://www.youtube.com/watch?v=sEenDC5fry4
+        //https://youtu.be/sEenDC5fry4
+        //https://www.youtube.com/live/pY5yHv-ZOi4?feature=share
+        //https://www.youtube.com/watch?v=pY5yHv-ZOi4&pp=ygUQ7Lmo7LCp66eoIOybkOuztQ%3D%3D
+        //링크가 두 종류임... -> 4종류 됨..........................
+
         if(url.contains("https://www.youtube.com/watch?v=")){
-            returnurl = "https://www.youtube.com/embed/" + req.getOriginal_link().substring(32);
+            if(url.contains(("&pp="))){
+                returnurl = "https://www.youtube.com/embed/" + url.substring(32, 43);
+            }else{
+                returnurl = "https://www.youtube.com/embed/" + url.substring(32, 43);
+            }
         }
         else if(url.contains("https://youtu.be/")){
-            returnurl = "https://www.youtube.com/embed/" + req.getOriginal_link().substring(17);
+            returnurl = "https://www.youtube.com/embed/" + url.substring(17, 28);
         }
-        else if(url.contains("https://www.youtube.com/embed/")){
-            returnurl = req.getOriginal_link();
+        else if(url.contains("https://www.youtube.com/live/")){
+            returnurl = "https://www.youtube.com/embed/" + url.substring(29, 40);
         }
         else{
-            return false;
+            returnurl = url;
         }
-
 
         RecruitBoardDO recruitBoardDO = new RecruitBoardDO(req.getRecruit_title(), req.getDuty(), req.getWorkload(), req.getRequirement(),
                 req.getSalary_detail(), req.getPreference(), req.getEdit_tools(), req.getEnvironment(), req.getWelfare(), req.getRecruit_detail(),
                 req.getSalary(), LocalDate.parse(req.getDeadline()), returnurl, req.getChannel_categories());
 
         recruitBoardDao.modifyRecruitBoard(recruitBoardDO, recruitNo, email);
-        return true;
     }
 
     //주현
@@ -137,4 +152,9 @@ public class RecruitService {
         return recruitBoardDao.getTotalRecruits(youtuber_email);
     }
 
+    // 준원
+    // 유튜버 사진 및 채널명 가져오는 메서드
+    public YoutuberDO getYoutuberPhotoName(int recruitNo) {
+        return recruitBoardDao.selectYoutuberInfo(recruitNo);
+    }
 }

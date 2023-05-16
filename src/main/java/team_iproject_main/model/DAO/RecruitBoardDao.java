@@ -62,13 +62,21 @@ public class RecruitBoardDao {
         return jdbcTemplate.queryForObject("select * from recruit_board where RECRUIT_NO = ? " , new RecruitRowMapper(), recruitNo);
     }
 
+    //준원
+    //구인글 게시판에서 활용할 유튜버 채널사진, 채널명 가져오는 메서드
+    public YoutuberDO selectYoutuberInfo(int recruitNo) {
+        String sql = "SELECT Y.CHANNEL_PHOTO, Y.CHANNEL_NAME, Y.YOUTUBER_EMAIL, Y.CHANNEL_ID, Y.SUBSCRIBE, Y.VIDEO_COUNT, Y.VIEW_COUNT " +
+                "FROM (USER_YOUTUBER Y) JOIN (RECRUIT_BOARD R) ON (Y.YOUTUBER_EMAIL LIKE R.YOUTUBER_EMAIL) " +
+                "WHERE RECRUIT_NO = ?";
+        return jdbcTemplate.queryForObject(sql, new RecruitYoutuberInfoRowMapper(), recruitNo);
+    }
 
     //주현 0511
     //편집자가 마이페이지 - 지원현황 : 자신만 지원한 구인글 내림차순 추출
     // 준영 페이징 추가
     public List<RecruitDO> findAllApplyByEmail(String email, int postsPerPage, int offset){
         String sql = "SELECT * FROM (SELECT ROWNUM AS rn, rb.* FROM (SELECT * FROM RECRUIT_BOARD WHERE RECRUIT_NO IN" +
-                "(SELECT RECRUIT_NO FROM APPLY_EDITOR WHERE EDITOR_EMAIL = ?) ORDER BY DEADLINE) rb) WHERE rn BETWEEN ? AND ?";
+                "(SELECT RECRUIT_NO FROM APPLY_EDITOR WHERE EDITOR_EMAIL = ?) ORDER BY DEADLINE, RECRUIT_NO) rb) WHERE rn BETWEEN ? AND ?";
 
         return jdbcTemplate.query(sql, new Object[]{email, offset + 1, offset + postsPerPage}, new RecruitRowMapper());
     }
@@ -135,7 +143,7 @@ public class RecruitBoardDao {
     public List<RecruitSearchDO> SearchFinder(RequestKeyword keywordDO, int postsPerPage, int offset) {
         String[] tools = keywordDO.getEdit_tools_no();
 
-        String sql = "select * from (select ROWNUM rn, rb.* from(select distinct r.recruit_no, r.recruit_title, r.deadline, y.channel_name " +
+        String sql = "select * from (select ROWNUM rn, rb.* from(select distinct r.recruit_no, r.recruit_title, r.deadline, y.channel_name, y.channel_photo " +
                 "from recruit_board r " +
                 "join edit_tools_recruit e on r.recruit_no = e.recruit_no " +
                 "join user_youtuber y on r.youtuber_email = y.youtuber_email " +
@@ -191,7 +199,7 @@ public class RecruitBoardDao {
     // 마이페이지 -> 작성한 구인글
     // 준영 페이징 추가
     public List<MyRecruitDO> findMyRecruit(String youtuber_email, int postsPerPage, int offset) {
-        String sql = "select * from (SELECT ROWNUM AS rn, recruit_no, recruit_title, post_date, deadline from (select * from recruit_board where youtuber_email = '" + youtuber_email + "' order by recruit_no desc)) where rn between ? and ?";
+        String sql = "select * from (SELECT ROWNUM AS rn, rb.* from (select * from recruit_board where youtuber_email = '" + youtuber_email + "' order by recruit_no desc) rb) where rn between ? and ?";
         return jdbcTemplate.query(sql, new Object[]{offset + 1, offset + postsPerPage}, new MyRecruitRowMapper());
     }
 

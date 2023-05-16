@@ -6,8 +6,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import team_iproject_main.model.DO.ApplierListDO;
 import team_iproject_main.model.DO.ApplyEditorDO;
+import team_iproject_main.model.DO.UserEditorDO;
 import team_iproject_main.model.Mapper.ApplierListRowMapper;
 import team_iproject_main.model.Mapper.ApplyEditorRowMapper;
+import team_iproject_main.model.Mapper.EditorRowMapper;
 
 import java.util.List;
 
@@ -68,4 +70,22 @@ public class ApplyEditorDao {
         return jdbcTemplate.queryForObject(sql, Integer.class, recruitNo);
     }
 
+    public UserEditorDO findEditor(String email){
+        String sql = "SELECT * FROM USER_EDITOR WHERE EDITOR_EMAIL = ?";
+        return jdbcTemplate.queryForObject(sql, new EditorRowMapper(), email);
+    }
+
+    // 준원 0513
+    // 테스트 영상확인
+    public ApplyEditorDO checkApplierVideo(String editor_email, int recruit_no) {
+        String sql = "SELECT * FROM APPLY_EDITOR WHERE EDITOR_EMAIL = ? AND RECRUIT_NO = ?";
+        return jdbcTemplate.queryForObject(sql, new ApplyEditorRowMapper(), editor_email, recruit_no);
+    }
+
+    // 준원 0514
+    // 유튜버 메모
+    public void updateYoutuberMemo(String youtuber_memo, int apply_no){
+        String sql = "UPDATE APPLY_EDITOR SET YOUTUBER_MEMO = ? WHERE APPLY_NO = ?";
+        jdbcTemplate.update(sql, youtuber_memo, apply_no);
+    }
 }
