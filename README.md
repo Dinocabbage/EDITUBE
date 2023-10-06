@@ -7,6 +7,8 @@
 
 https://youtu.be/lcblaAtgEHg?si=rjAvG3zGdcvPqWKr
 
+## #**개요**
+
 - **팀 소개**
   
     ![발표 자료_v2 0_page_4](https://github.com/Dinocabbage/EDITUBE/assets/122075305/8cbe7d1b-34ef-4685-a9d0-3920a6d760b8)
