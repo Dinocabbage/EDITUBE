@@ -22,11 +22,11 @@ public class RecruitBoardDao {
 
         String sql = "INSERT INTO RECRUIT_BOARD(RECRUIT_NO, YOUTUBER_EMAIL, RECRUIT_TITLE, DUTY, WORKLOAD, REQUIREMENT, " +
                 "SALARY_DETAIL, PREFERENCE, ENVIRONMENT, WELFARE, RECRUIT_DETAIL, SALARY, DEADLINE, ORIGINAL_LINK) " +
-                "VALUES (RECRUIT_BOARD_SEQ.NEXTVAL, ?, ?, ?, ?, ?, ?, ? ,? ,? ,? ,? ,?, ?)";
+                "VALUES (RECRUIT_BOARD_SEQ.NEXTVAL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
-            PreparedStatement ps = con.prepareStatement(sql, new String[] { "RECRUIT_NO" });
+            PreparedStatement ps = con.prepareStatement(sql, new String[]{"RECRUIT_NO"});
             ps.setString(1, recruitDO.getYoutuber_email());
             ps.setString(2, recruitDO.getRecruit_title());
             ps.setString(3, recruitDO.getDuty());
@@ -46,15 +46,16 @@ public class RecruitBoardDao {
         int recruitNo = keyHolder.getKey().intValue();
 
         String sqltools = "INSERT INTO EDIT_TOOLS_RECRUIT(EDIT_TOOLS_NO, RECRUIT_NO, EDIT_TOOL) VALUES (EDIT_TOOLS_RECRUIT_SEQ.NEXTVAL, ?, ?)";
-        for(String tool : recruitDO.getEdit_tools()){
+        for (String tool : recruitDO.getEdit_tools()) {
             jdbcTemplate.update(sqltools, recruitNo, tool);
         }
 
         String sqlcategories = "INSERT INTO CHANNEL_CATEGORY(CATEGORY_NO, RECRUIT_NO, CATEGORY) VALUES (CHANNEL_CATEGORY_SEQ.NEXTVAL, ?, ?)";
-        for(String category : recruitDO.getChannel_categories()){
+        for (String category : recruitDO.getChannel_categories()) {
             jdbcTemplate.update(sqlcategories, recruitNo, category);
         }
     }
+
 
     //희수
     //게시글 상세조회

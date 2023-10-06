@@ -73,6 +73,7 @@ public class UserDao {
     public UserDO findByNickname1(String nickname) {
         String sql = "SELECT * FROM user_info WHERE nickname = ?";
         UserDO user = null;
+
         try{
             user = jdbcTemplate.queryForObject(sql, new UserRowMapper(), nickname);
             log.info("userDAO"+ user);
@@ -85,6 +86,7 @@ public class UserDao {
     public UserDO findByPhoneNumber(String phone_number) {
         String sql = "SELECT * FROM user_info WHERE phone_number = ?";
         UserDO user = null;
+
         try{
             user = jdbcTemplate.queryForObject(sql, new UserRowMapper(), phone_number);
             log.info("userDAO"+ user);

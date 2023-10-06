@@ -47,7 +47,7 @@ public class ApplyController {
         if(applyEditorDO != null) {
             re.addAttribute("msg", "이미 지원한 구인글입니다.");
         }else if(userEditorDO.getIS_UPLOADED().equals("FALSE")){
-            re.addAttribute("msg", "포트폴리오가 업로드 되지 않았습니다.\n마이페이지에서 포트폴리오를 올린 후 지원해주세요");
+            re.addFlashAttribute("msg", "포트폴리오가 업로드 되지 않았습니다.\n마이페이지에서 포트폴리오를 올린 후 지원해주세요");
             return "redirect:/myPage";
         }
         else{
@@ -202,6 +202,7 @@ public class ApplyController {
         int startPage = Math.max(1, page - (pageNavigationLinks / 2));
         int endPage = Math.min(startPage + pageNavigationLinks - 1, totalPages);
 
+        model.addAttribute("recruitNo", recruitNo);
         model.addAttribute("currentPage", page);
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
