@@ -5,7 +5,7 @@
 
 ## **#시연 영상**
 
-[https://youtu.be/lcblaAtgEHg](https://youtu.be/lcblaAtgEHg)
+<iframe width="560" height="315" src="https://www.youtube.com/embed/lcblaAtgEHg" frameborder="0" allowfullscreen></iframe>
 
 - **팀 소개**
   
